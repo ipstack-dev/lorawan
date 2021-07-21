@@ -92,7 +92,7 @@ java -cp lorawan.jar test.LorawanGw -f gw.cfg
 where the configuration file "gw.cfg" includes the same values (gwEui, appEui aka JoinEUI, appServer aka Gateway server address, devEui) specified in the TTN console.
 
 Here is an example of fragment of the console log that includes the device association and three data messages:  
-  
+```
 03:44:50.388: SemtechClient[7000]: sending: PULL_DATA c0c8 feffff0123450000
 03:44:50.445: DeviceClient: device: CounterDevice
 03:44:50.495: SemtechClient[7000]: received: PULL_ACK c0c8
@@ -129,28 +129,28 @@ Here is an example of fragment of the console log that includes the device assoc
 03:46:55.069: DeviceClient: data: 00000002
 03:46:55.070: SemtechClient[7000]: sending: PUSH_DATA 0e3f feffff0123450000 {"rxpk":[{"time":"2021-02-01T03:46:55.069Z","tmst":124378,"freq":868.1,"chan":0,"rfch":1,"stat":1,"modu":"LORA","datr":"SF7BW125","codr":"4/5","rssi":-65,"lsnr":7.8,"size":17,"data":"QIpGASYAAgABsCja2LXSvec="}]}
 03:46:55.215: SemtechClient[7000]: received: PUSH_ACK 0e3f
-
+```
 
 At the beginning of the log we can see the device type ('CounterDevice'):
-
+```
 03:44:50.445: DeviceClient: device: CounterDevice
-
+```
 
 Then we can see when the device is associated:
-
+```
 03:44:55.063: DeviceClient: associated
 03:44:55.064: DeviceClient: new session context: {"fNwkSIntKey":"b47b4dd19b8f66067269e0d8d6c2e8ba","sNwkSIntKey":"b47b4dd19b8f66067269e0d8d6c2e8ba","nwkSEncKey":"b47b4dd19b8f66067269e0d8d6c2e8ba","fCntUp":0,"fCntDown":0,"nFCntDwn":0,"devAddr":"2601468a","appSKey":"51b4868353692c8982a5ff6ccd77c5bc","aFCntDown":0}
-
+```
 
 And then, the data payload that is sent to the application server. For example:
-
+```
 03:44:55.065: DeviceClient: data: 00000000
 03:44:55.068: SemtechClient[7000]: sending: PUSH_DATA 82df feffff0123450000 {"rxpk":[{"time":"2021-02-01T03:44:55.067Z","tmst":4375,"freq":868.1,"chan":0,"rfch":1,"stat":1,"modu":"LORA","datr":"SF7BW125","codr":"4/5","rssi":-65,"lsnr":7.8,"size":17,"data":"QIpGASYAAAABADDq0cW1s0Q="}]}
-
+```
 
 In particular the first line shows the data in cleartext ('00000000'), while the second line shows the Semtech packet. It is a PUSH_DATA packet and the following information is shown: the Semtech packet type, the two-byte token, the gateway EUI, and the enclosed JSON object containing some metadata and the actual LoraWAN MAC message.
 The LoraWAN MAC message is included in base64 format. It can be decode as follows:
-
+```
   java -cp lorawan.jar test.LorawanParser -B QIpGASYAAAABADDq0cW1s0Q=
 
         MACMessage: 408a460126000000010030ead1c5b5b344
@@ -163,10 +163,11 @@ The LoraWAN MAC message is included in base64 format. It can be decode as follow
                 FCnt: 0
                 FPort: 1
                 EncryptedFRMPayload: 0030ead1
+```
 				
 The device data is encrypted. The data can be decrypted using the 'appSKey' of the session context created above.
 In this example the appSKey is '51b4868353692c8982a5ff6ccd77c5bc', and the data can decrypted by doing:
-
+```
   java -cp lorawan.jar test.LorawanParser -B QIpGASYAAAABADDq0cW1s0Q= -appskey 51b4868353692c8982a5ff6ccd77c5bc
 
         MACMessage: 408a460126000000010030ead1c5b5b344
@@ -179,3 +180,4 @@ In this example the appSKey is '51b4868353692c8982a5ff6ccd77c5bc', and the data 
                 FCnt: 0
                 FPort: 1
                 FRMPayload: 00000000
+```
