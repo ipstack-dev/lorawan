@@ -11,7 +11,7 @@ java -cp lorawan.jar test.LorawanGw -f gw.cfg
 
 or by using command line options, e.g.:
 ```
-java -cp lorawan.jar test.LorawanGw -gweui 0A0027fffe00000F -deveui feffff2002110001 -appeui 70b3d57ed00392fd -appkey 69f50c4c63feb58483e10b487dcfeaa3 -t 40 -v
+java -cp lorawan.jar test.LorawanGw -gweui FEFFFF0123450000 -appServer router.eu.thethings.network -deveui FEFFFF0123450001 -t 40 -appeui 0000000000000000 -appkey 00000000000000000000000000000000 -v
 ```
 
 Note that, if no network server is specified, TTN is used by default.
