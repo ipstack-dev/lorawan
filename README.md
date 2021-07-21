@@ -45,9 +45,11 @@ it.unipr.netsec.ipstack.lorawan.device.CurrentTimeDevice
 
 
 
-# Attaching the gateway to a LoRaWAN backend (network server, join server and application server)
+# Attaching the gateway to a LoRaWAN backend
 
-As an example of using this virtual gateway we are going to attach it to TTN (The Things Networks) platform.
+In order to run the gateway we have to attach it to a LoRaWAN backend platform including a network server, a join server and an application server.
+
+As an example of backend platform we are going to use the TTN (The Things Networks).
 
 The first step is to create and configure a gateway profile on the TTN platform. For this purpose we have to log-in to TTN. If you don't have a account in TTN you have to create it ("Sign Up").
 
