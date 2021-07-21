@@ -19,7 +19,7 @@ import it.unipr.netsec.ipstack.lorawan.dragino.DraginoLHT65;
 import it.unipr.netsec.ipstack.lorawan.semtech.SemtechClient;
 
 
-/** LoraWAN virtual gateway and LoraWAN virtual device.
+/** LoRaWAN virtual gateway and LoRaWAN virtual device.
  * <p>
  * It creates a virtual gateway and connects it to a remote LoraWAN network server using the Semtech protocol.
  * By default TTN is used as network server.
