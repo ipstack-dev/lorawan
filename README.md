@@ -5,11 +5,13 @@ LoRaWAN virtual gateway and LoRaWAN virtual devices. The virtual gateway that ca
 # Configuration
 
 The LoRaWAN virtual gateway can be configured via a configuration file, e.g.:
-```java -cp lorawan.jar test.LorawanGw -f gw.cfg
+```
+java -cp lorawan.jar test.LorawanGw -f gw.cfg
 ```
 
-Or by using command line options, e.g.:
-```java -cp lorawan.jar test.LorawanGw -gweui 0A0027fffe00000F -deveui feffff2002110001 -appeui 70b3d57ed00392fd -appkey 69f50c4c63feb58483e10b487dcfeaa3 -t 40 -v
+or by using command line options, e.g.:
+```
+java -cp lorawan.jar test.LorawanGw -gweui 0A0027fffe00000F -deveui feffff2002110001 -appeui 70b3d57ed00392fd -appkey 69f50c4c63feb58483e10b487dcfeaa3 -t 40 -v
 ```
 
 Note that, if no network server is specified, TTN is used by default.
