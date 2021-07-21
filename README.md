@@ -1,6 +1,6 @@
 # LoRaWAN virtual gateway
 
-LoRaWAN virtual gateway and LoRaWAN virtual devices. The virtual gateway that can be used to connect to a remote LoRaWAN network server using the Semtech protocol, relaying data from the given virtual devices to the network server.
+LoRaWAN virtual gateway and LoRaWAN virtual devices. The virtual gateway can be used to connect to a remote LoRaWAN network server using the Semtech protocol, relaying data from the given virtual devices to the network server.
 
 # Configuration
 
