@@ -19,22 +19,34 @@ import it.unipr.netsec.ipstack.lorawan.dragino.DraginoLHT65;
 import it.unipr.netsec.ipstack.lorawan.semtech.SemtechClient;
 
 
-/** LoRaWAN virtual gateway and LoRaWAN virtual device.
+/** LoRaWAN virtual gateway and LoRaWAN virtual devices.
  * <p>
- * It creates a virtual gateway and connects it to a remote LoraWAN network server using the Semtech protocol.
- * By default TTN is used as network server.
+ * It creates a virtual gateway and connects it to a remote LoRaWAN network server using the Semtech protocol.
  * <p>
  * It also creates a virtual device and connects it to the network server via the gateway.
  * <p>
- * Different types of virtual device are available:
+ * The LoRaWAN virtual gateway can be configured via a configuration file, e.g.:
+ * <bre>java -cp lorawan.jar test.LorawanGw -f gw.cfg
+ * </bre>
+ * <p>
+ * or by using command line options, e.g.:
+ * <bre>java -cp lorawan.jar test.LorawanGw -gweui FEFFFFabcdef0000 -appServer router.eu.thethings.network -deveui FEFFFFabcdef0001 -t 40 -appeui 0000000000000000 -appkey 00000000000000000000000000000000 -v
+ * </bre>
+ * Replaces the EUIs and key with the proper values.
+ * <p>
+ * If no network server is specified, TTN is used by default.
+ * <p>
+ * Different types of virtual devices are available:
  * <ul>
  * <li>CountDevice - simple device with readable and writable integer value that is incremented at each reading; the integer is encoded as four bytes in big-endian;</li>
  * <li>CurrentTimeDevice - simple device with read-only data that is the current time returned as YYYY-MM-dd HH:mm:ss string;</li>
  * <li>DataDevice - device with readable and writable data maintained in RAM; the data has to be passed as parameter (byte array as hexadecimal string);</li>
  * <li>FileDevice - device with readable and writable data stored in a file; the file name has to be passed as parameter;</li>
  * <li>DraginoLHT65 - Dragino LHT65 with artificial temperature and humidity values;</li>
- * <li>DraginoLSE01 - Dragino LSE01 with artificial temperature and soil moisture values;</li>
+ * <li>DraginoLSE01 - Dragino LSE01 with artificial temperature and soil moisture values.</li>
  * </ul>
+ * <p>
+ * Other types virtual devices can be used by specifying the complete class name; for example: "it.unipr.netsec.ipstack.lorawan.device.CurrentTimeDevice".
  */
 public abstract class LorawanGw {
 	
