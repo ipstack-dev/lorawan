@@ -64,7 +64,7 @@ Optionally we can download from TTN the "Global configuration" as JSON file.
 The second step is to create a new TTN application and add one or more devices. We go to "Applications", we do "Add application" and specify the requested information (at lest just an Application ID).
 Then we do "Add end device" and do "manual device registration" with the following information:
 * Activation mode: OTAA
-* LoRaWAN version: MAC V1.0.4 could be ok
+* LoRaWAN version: MAC V1.0.2 could be ok
 
 We press "Start" and continue with the basic settings:
 * End device ID: select a distinguish name
