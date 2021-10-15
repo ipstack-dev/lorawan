@@ -54,7 +54,7 @@ it.unipr.netsec.ipstack.lorawan.device.CurrentTimeDevice
 
 
 
-# Attaching the gateway to a LoRaWAN backend
+# Configuring the gateway and devices on TTN
 
 In order to run the gateway we have to attach it to a LoRaWAN backend platform including a network server, a join server and an application server.
 
@@ -63,9 +63,9 @@ As an example of backend platform we are going to use the TTN (The Things Networ
 The first step is to create and configure a gateway profile on the TTN platform. For this purpose we have to log-in to TTN. If you don't have a account in TTN you have to create it ("Sign Up").
 
 Once we are in, we go to "Console" and select a region (for example "Europe 1"). Then we do "Register a gateway", and specify the requested information. In particular you have to indicate:
-* a Gateway ID,
-* the selected Gateway EUI,
-* Frequency plan.
+* A Gateway ID,
+* The selected Gateway EUI,
+* The frequency plan.
 
 From this configuration we copy the provided "Gateway server address" that is the address of the network server where the gateway has to connect to.
 Optionally we can download from TTN the "Global configuration" as JSON file.
