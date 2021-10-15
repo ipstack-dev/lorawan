@@ -1,35 +1,44 @@
-# LoRaWAN virtual gateway
+# LoRaWAN virtual gateway and virtual devices
 
-It includes a LoRaWAN virtual gateway and different LoRaWAN virtual devices (plus some LoRaWAN related utilities). The virtual gateway can be used to connect to a remote LoRaWAN network server using the Semtech protocol, and to relay data from some virtual devices to the network server.
+It includes a LoRaWAN virtual gateway and different LoRaWAN virtual devices, plus some LoRaWAN related utilities.
+
+The included virtual devices are software LoRaWAN devices capable to exchange standard LoRaWAN LoRaWAN MAC packets with a (virtual) gateway and a possible connected LoRaWAN backend system.
+
+The virtual gateway is a software LoRaWAN gateway that can connect to a standard remote LoRaWAN backend system (network server, join server and application server) and to relay data from/to virtual devices.
+The gateway uses the Semtech protocol for the communication with the LoRaWAN network server.
 
 # Configuring the gateway
 
 The LoRaWAN virtual gateway can be configured via a configuration file, e.g.:
 ```
-java -cp lorawan.jar test.LorawanGw -f gw.cfg
+java -cp lorawan.jar test.LorawanGateway -f gw.cfg
 ```
 
 or by using command line options, e.g.:
 ```
-java -cp lorawan.jar test.LorawanGw -gweui FEFFFFabcdef0000 -appServer router.eu.thethings.network -deveui FEFFFFabcdef00001 -t 40 -appeui 0000000000000000 -appkey 00000000000000000000000000000000 -v
+java -cp lorawan.jar test.LorawanGateway -gweui FEFFFFabcdef0000 -netsrv router.eu.thethings.network
 ```
 
-Replaces the EUIs and key with the proper values.
+Replaces the gateway EUI and network server address with the proper values.
 
-In particular, regarding GW and device EUIs, since the two nodes are virtual, the corresponding EUIs are not provided by a manufacturer and we need to define them.
+Regarding the gateway EUI, since the gateway is virtual, it doesn't have a manufacturer provided EUI and you probably need to generate it.
 
 In order to avoid or minimize the probability of conflict with other valid EUIs, a suggestion could be to use one of the two options:
 
 * create the EUI-64 identifier using an assigned OUI or, if you not have one, using [FE-FF-FF as OUI](https://lora-developers.semtech.com/library/tech-papers-and-guides/the-book/deveui/); for example: [FE FF FF ab cd ef 00 01]; or
 * starting from a 48 bit IEEE MAC address it can be expanded to EUI-64 using the method specified by IEEE as ["Guidelines for Use of Extended Unique Identifier (EUI)"]( https://standards.ieee.org/content/dam/ieee-standards/standards/web/documents/tutorials/eui.pdf) (although it is now formally considered deprecated); starting from a 48 bit address [X1 X2 X3 X4 X5 X6] the mapped EUI-64 is obtained by adding in the middle two bytes 0xFF and 0xFE, i.e. [X1 X2 X3 FF FE X4 X5 X6].
 
-If no network server is specified, TTN is used by default.
+Note that if no network server is specified, TTN 'router.eu.thethings.network' is used by default.
+
+The gateway communicates with virtual devices using UDP protocol. The default gateway UDP port is 1700. 
 
 
 
 # Virtual devices
 
-There are some types of virtual devices already available:
+Are software devices that acts as standard LoRaWAN devices starting to the LoRaWAN MAC layer. Since the LoRaWAN is not present, LoRaWAN MAC packets are exchanged with the virtual gateway by simply encapsulating LoRaWAN MAC packets within UDP datagrams.
+
+There are some types of virtual devices already implemented, that are:
  * CountDevice - simple device with readable and writable integer value that is incremented at each reading; the integer is encoded as four bytes in big-endian;
  * CurrentTimeDevice - simple device with read-only data that is the current time returned as YYYY-MM-dd HH:mm:ss string;
  * DataDevice - device with readable and writable data maintained in RAM; the data has to be passed as parameter (byte array as hexadecimal string);
@@ -80,104 +89,131 @@ Then go "Join settings" and fill Root keys:
 
 Finish by pressing "Add end node".
 
+Now we are ready to start the virtual gateway and devices.
+
 
 
 # Running the gateway
 
-Now we are ready to start the virtual gateway and device:
+For starting the gateway:
 ```
-java -cp lorawan.jar test.LorawanGw -f gw.cfg
+java -cp lorawan.jar test.LorawanGateway -f gw.cfg -v
 ```
 
-where the configuration file "gw.cfg" includes the same values (gwEui, appEui aka JoinEUI, appServer aka Gateway server address, devEui) specified in the TTN console.
+where the configuration file "gw.cfg" includes the same gateway values (gwEui and networkServer) configured in the TTN console.
 
-Here is an example of fragment of the console log that includes the device association and three data messages:  
+Here is an example of fragment of the gateway console log that includes the association of a device and the first device data message:  
 ```
-03:44:50.388: SemtechClient[7000]: sending: PULL_DATA c0c8 feffff0123450000
-03:44:50.445: DeviceClient: device: CounterDevice
-03:44:50.495: SemtechClient[7000]: received: PULL_ACK c0c8
-03:44:50.695: SemtechClient[7000]: sending: PUSH_DATA 41c6 feffff0123450000 {"rxpk":[{"time":"2021-02-01T03:44:50.692Z","tmst":0,"freq":868.1,"chan":0,"rfch":1,"stat":1,"modu":"LORA","datr":"SF7BW125","codr":"4/5","rssi":-65,"lsnr":7.8,"size":23,"data":"AP2SA9B+1bNwAQBFIwH///4CiSUpMj4="}]}
-03:44:50.815: SemtechClient[7000]: received: PUSH_ACK 41c6
-03:44:55.056: SemtechClient[7000]: received: PULL_RESP 0001 {"txpk":{"imme":false,"tmst":5000000,"freq":868.1,"rfch":0,"powe":14,"modu":"LORA","datr":"SF7BW125","codr":"4/5","ipol":true,"size":33,"ncrc":true,"data":"II69kW1jc2U6c8JDJGJxN9K3FV3DbsV8cIMAFBPfH6B9"}}
-03:44:55.056: SemtechClient[7000]: sending: TX_ACK 0001 feffff0123450000
-03:44:55.062: DeviceClient: received LoraWAN message: pktInfo: {"txpk":{"imme":false,"tmms":0,"freq":868.1,"rfch":0,"powe":14,"modu":"LORA","datr":"SF7BW125","codr":"4/5","ipol":true,"size":33,"ncrc":true,"data":"II69kW1jc2U6c8JDJGJxN9K3FV3DbsV8cIMAFBPfH6B9"}}
-03:44:55.062: DeviceClient: received LoraWAN message: MType: Join Accept, MacPayload: 8ebd916d6373653a73c24324627137d2b7155dc36ec57c7083001413, MIC: df1fa07d
-03:44:55.063: DeviceClient: associated
-03:44:55.064: DeviceClient: new session context: {"fNwkSIntKey":"b47b4dd19b8f66067269e0d8d6c2e8ba","sNwkSIntKey":"b47b4dd19b8f66067269e0d8d6c2e8ba","nwkSEncKey":"b47b4dd19b8f66067269e0d8d6c2e8ba","fCntUp":0,"fCntDown":0,"nFCntDwn":0,"devAddr":"2601468a","appSKey":"51b4868353692c8982a5ff6ccd77c5bc","aFCntDown":0}
-03:44:55.065: DeviceClient: data: 00000000
-03:44:55.068: SemtechClient[7000]: sending: PUSH_DATA 82df feffff0123450000 {"rxpk":[{"time":"2021-02-01T03:44:55.067Z","tmst":4375,"freq":868.1,"chan":0,"rfch":1,"stat":1,"modu":"LORA","datr":"SF7BW125","codr":"4/5","rssi":-65,"lsnr":7.8,"size":17,"data":"QIpGASYAAAABADDq0cW1s0Q="}]}
-03:44:55.135: SemtechClient[7000]: received: PUSH_ACK 82df
-03:45:00.447: SemtechClient[7000]: sending: PUSH_DATA dd80 feffff0123450000 {"status":{"time":"2021-02-01 03:45:00 GMT","lati":0.0,"long":0.0,"alti":0,"rxnb":0,"rxok":0,"rxfw":0,"ackr":0.0,"dwnb":0,"txnb":0}}
-03:45:00.576: SemtechClient[7000]: received: PUSH_ACK dd80
-03:45:10.445: SemtechClient[7000]: sending: PULL_DATA 5197 feffff0123450000
-03:45:10.576: SemtechClient[7000]: received: PULL_ACK 5197
-03:45:30.445: SemtechClient[7000]: sending: PULL_DATA 6000 feffff0123450000
-03:45:30.576: SemtechClient[7000]: received: PULL_ACK 6000
-03:45:50.446: SemtechClient[7000]: sending: PULL_DATA 9fd6 feffff0123450000
-03:45:50.576: SemtechClient[7000]: received: PULL_ACK 9fd6
-03:45:55.068: DeviceClient: data: 00000001
-03:45:55.069: SemtechClient[7000]: sending: PUSH_DATA 7b64 feffff0123450000 {"rxpk":[{"time":"2021-02-01T03:45:55.069Z","tmst":64377,"freq":868.1,"chan":0,"rfch":1,"stat":1,"modu":"LORA","datr":"SF7BW125","codr":"4/5","rssi":-65,"lsnr":7.8,"size":17,"data":"QIpGASYAAQAB/r3gWefY6Xg="}]}
-03:45:55.215: SemtechClient[7000]: received: PUSH_ACK 7b64
-03:46:00.448: SemtechClient[7000]: sending: PUSH_DATA 916e feffff0123450000 {"status":{"time":"2021-02-01 03:46:00 GMT","lati":0.0,"long":0.0,"alti":0,"rxnb":0,"rxok":0,"rxfw":0,"ackr":0.0,"dwnb":0,"txnb":0}}
-03:46:00.575: SemtechClient[7000]: received: PUSH_ACK 916e
-03:46:10.446: SemtechClient[7000]: sending: PULL_DATA 755d feffff0123450000
-03:46:10.574: SemtechClient[7000]: received: PULL_ACK 755d
-03:46:30.446: SemtechClient[7000]: sending: PULL_DATA 876b feffff0123450000
-03:46:30.575: SemtechClient[7000]: received: PULL_ACK 876b
-03:46:50.446: SemtechClient[7000]: sending: PULL_DATA 64c2 feffff0123450000
-03:46:50.575: SemtechClient[7000]: received: PULL_ACK 64c2
-03:46:55.069: DeviceClient: data: 00000002
-03:46:55.070: SemtechClient[7000]: sending: PUSH_DATA 0e3f feffff0123450000 {"rxpk":[{"time":"2021-02-01T03:46:55.069Z","tmst":124378,"freq":868.1,"chan":0,"rfch":1,"stat":1,"modu":"LORA","datr":"SF7BW125","codr":"4/5","rssi":-65,"lsnr":7.8,"size":17,"data":"QIpGASYAAgABsCja2LXSvec="}]}
-03:46:55.215: SemtechClient[7000]: received: PUSH_ACK 0e3f
+16:46:05.250: SemtechClient[7000]: sending: PULL_DATA 78f2 feffff0123450000
+16:46:05.372: SemtechClient[7000]: received: PULL_ACK 78f2
+16:46:15.334: SemtechClient[7000]: sending: PUSH_DATA 00f7 feffff0123450000 {"status":{"time":"2021-10-15 16:46:15 GMT","lati":0.0,"long":0.0,"alti":0,"rxnb":0,"rxok":0,"rxfw":0,"ackr":0.0,"dwnb":0,"txnb":0}}
+16:46:15.399: SemtechClient[7000]: received: PUSH_ACK 00f7
+16:46:25.331: SemtechClient[7000]: sending: PULL_DATA 687d feffff0123450000
+16:46:25.399: SemtechClient[7000]: received: PULL_ACK 687d
+16:46:45.332: SemtechClient[7000]: sending: PULL_DATA f7b4 feffff0123450000
+16:46:45.398: SemtechClient[7000]: received: PULL_ACK f7b4
+16:46:48.998: LorawanGateway: processReceivedDatagramPacket(): pktInfo: {"time":"2021-10-15T16:46:48.996Z","tmst":0,"freq":868.1,"chan":0,"rfch":1,"stat":1,"modu":"LORA","datr":"SF7BW125","codr":"4/5","rssi":-65,"lsnr":7.8,"size":23,"data":"AAEAAAAAAAAAAQARAiD///5ekfjnZGw="}
+16:46:48.999: SemtechClient[7000]: sending: PUSH_DATA 3bb8 feffff0123450000 {"rxpk":[{"time":"2021-10-15T16:46:48.996Z","tmst":0,"freq":868.1,"chan":0,"rfch":1,"stat":1,"modu":"LORA","datr":"SF7BW125","codr":"4/5","rssi":-65,"lsnr":7.8,"size":23,"data":"AAEAAAAAAAAAAQARAiD///5ekfjnZGw="}]}
+16:46:49.075: SemtechClient[7000]: received: PUSH_ACK 3bb8
+16:46:53.277: SemtechClient[7000]: received: PULL_RESP 0001 {"txpk":{"imme":false,"tmst":5000000,"freq":868.1,"rfch":0,"powe":14,"modu":"LORA","datr":"SF7BW125","codr":"4/5","ipol":true,"size":33,"ncrc":true,"data":"ILwFnAdShjHpTliPUd7Emk8yWWs1eGB7X34xmq0PxbX3"}}
+16:46:53.278: SemtechClient[7000]: sending: TX_ACK 0001 feffff0123450000
+16:46:53.291: LorawanGateway: processReceivedTxPacketMessage(): pktInfo: {"txpk":{"imme":false,"tmms":0,"freq":868.1,"rfch":0,"powe":14,"modu":"LORA","datr":"SF7BW125","codr":"4/5","ipol":true,"size":33,"ncrc":true,"data":"ILwFnAdShjHpTliPUd7Emk8yWWs1eGB7X34xmq0PxbX3"}}
+16:46:53.293: LorawanGateway: processReceivedTxPacketMessage(): sent to: /127.0.0.1:61004
+16:46:53.316: LorawanGateway: processReceivedDatagramPacket(): pktInfo: {"time":"2021-10-15T16:46:53.316Z","tmst":4320,"freq":868.1,"chan":0,"rfch":1,"stat":1,"modu":"LORA","datr":"SF7BW125","codr":"4
+/5","rssi":-65,"lsnr":7.8,"size":17,"data":"QL70CyYAAAABgrZYaGIJdkM="}
+16:46:53.321: SemtechClient[7000]: sending: PUSH_DATA 2eac feffff0123450000 {"rxpk":[{"time":"2021-10-15T16:46:53.316Z","tmst":4320,"freq":868.1,"chan":0,"rfch":1,"stat":1,"modu":"LORA","datr":"SF7BW125","codr":"4/5","rssi":-65,"lsnr":7.8,"size":17,"data":"QL70CyYAAAABgrZYaGIJdkM="}]}
+16:46:53.395: SemtechClient[7000]: received: PUSH_ACK 2eac
+16:46:53.807: SemtechClient[7000]: received: PULL_RESP 0002 {"txpk":{"imme":false,"tmst":6004320,"freq":869.525,"rfch":0,"powe":27,"modu":"LORA","datr":"SF9BW125","codr":"4/5","ipol":true,"size":13,"ncrc":true,"data":"YL70CyaBAAAG83GiiQ=="}}
+16:46:53.808: SemtechClient[7000]: sending: TX_ACK 0002 feffff0123450000
+16:46:53.812: LorawanGateway: processReceivedTxPacketMessage(): pktInfo: {"txpk":{"imme":false,"tmms":0,"freq":869.525,"rfch":0,"powe":27,"modu":"LORA","datr":"SF9BW125","codr":"4/5","ipol":true,"size":13,"ncrc":true,"data":"YL70CyaBAAAG83GiiQ=="}}
+16:46:53.813: LorawanGateway: processReceivedTxPacketMessage(): sent to: /127.0.0.1:61004
 ```
+
+
+# Running a device
+
+For starting a device:
+```
+java -cp lorawan.jar test.LorawanDevice -f dev.cfg -v
+```
+
+where the configuration file "dev.cfg" includes the same device values (devEui, appEui, etc.) configured in the TTN console.
+
+Here is an example of fragment of the device console log that includes the device association and three data messages:  
+```
+16:46:48.664: LorawanDevice: device: CounterDevice
+16:46:48.995: LorawanDevice: processjoiningTimeout(): sending Join request message: MType: Join Request, MacPayload: 01000000000000000100110220fffffe5e91, MIC: f8e7646c
+16:46:53.294: LorawanDevice: processReceivedDatagramPacket(): received LoraWAN message: MType: JoinAccept, MacPayload: bc059c07528631e94e588f51dec49a4f32596b3578607b5f7e319aad, MIC: 0fc5b5f7
+16:46:53.295: LorawanDevice: processReceivedDatagramPacket(): associated
+16:46:53.309: LorawanDevice: processReceivedDatagramPacket(): new session context: {"fNwkSIntKey":"c06ae35b383584adb39df05c9ac9878e","sNwkSIntKey":"c06ae35b383584adb39df05c9ac9878e","nwkSEncKey":"c06ae35b383584adb39df05c9ac9878e","fCntUp":0,"fCntDown":0,"nFCntDwn":0,"devAddr":"260bf4be","appSKey":"2ab6ddbb0ae7032de57ceb3d9faa5aa1","aFCntDown":0}
+16:46:53.311: LorawanDevice: data: 00000000
+16:46:53.315: LorawanDevice: processDataTimeout(): sending Data message: MType: Unconfirmed Data Up, MacPayload: bef40b260000000182b65868, MIC: 62097643
+16:46:53.814: LorawanDevice: processReceivedDatagramPacket(): received LoraWAN message: MType: Unconfirmed Data Down, MacPayload: bef40b2681000006, MIC: f371a289
+16:47:53.316: LorawanDevice: data: 00000001
+16:47:53.318: LorawanDevice: processDataTimeout(): sending Data message: MType: Unconfirmed Data Up, MacPayload: bef40b26000100014af601a3, MIC: ec1f3b80
+16:48:53.321: LorawanDevice: data: 00000002
+16:48:53.323: LorawanDevice: processDataTimeout(): sending Data message: MType: Unconfirmed Data Up, MacPayload: bef40b26000200011edb724a, MIC: ffac232f
+16:48:53.825: LorawanDevice: processReceivedDatagramPacket(): received LoraWAN message: MType: Unconfirmed Data Down, MacPayload: bef40b2681010006, MIC: 4af3821c
+```
+
 
 At the beginning of the log we can see the device type ('CounterDevice'):
 ```
-03:44:50.445: DeviceClient: device: CounterDevice
+16:46:48.664: DeviceClient: device: CounterDevice
 ```
 
 Then we can see when the device is associated:
 ```
-03:44:55.063: DeviceClient: associated
-03:44:55.064: DeviceClient: new session context: {"fNwkSIntKey":"b47b4dd19b8f66067269e0d8d6c2e8ba","sNwkSIntKey":"b47b4dd19b8f66067269e0d8d6c2e8ba","nwkSEncKey":"b47b4dd19b8f66067269e0d8d6c2e8ba","fCntUp":0,"fCntDown":0,"nFCntDwn":0,"devAddr":"2601468a","appSKey":"51b4868353692c8982a5ff6ccd77c5bc","aFCntDown":0}
+16:46:53.295: LorawanDevice: processReceivedDatagramPacket(): associated
+16:46:53.309: LorawanDevice: processReceivedDatagramPacket(): new session context: {"fNwkSIntKey":"c06ae35b383584adb39df05c9ac9878e","sNwkSIntKey":"c06ae35b383584adb39df05c9ac9878e","nwkSEncKey":"c06ae35b383584adb39df05c9ac9878e","fCntUp":0,"fCntDown":0,"nFCntDwn":0,"devAddr":"260bf4be","appSKey":"2ab6ddbb0ae7032de57ceb3d9faa5aa1","aFCntDown":0}
 ```
 
-And then, the data payload that is sent to the application server. For example:
+And then, the data payload that is sent to the gateway:
 ```
-03:44:55.065: DeviceClient: data: 00000000
-03:44:55.068: SemtechClient[7000]: sending: PUSH_DATA 82df feffff0123450000 {"rxpk":[{"time":"2021-02-01T03:44:55.067Z","tmst":4375,"freq":868.1,"chan":0,"rfch":1,"stat":1,"modu":"LORA","datr":"SF7BW125","codr":"4/5","rssi":-65,"lsnr":7.8,"size":17,"data":"QIpGASYAAAABADDq0cW1s0Q="}]}
+16:46:53.311: LorawanDevice: data: 00000000
+16:46:53.315: LorawanDevice: processDataTimeout(): sending Data message: MType: Unconfirmed Data Up, MacPayload: bef40b260000000182b65868, MIC: 62097643
 ```
 
-In particular the first line shows the data in cleartext ('00000000'), while the second line shows the Semtech packet. It is a PUSH_DATA packet and the following information is shown: the Semtech packet type, the two-byte token, the gateway EUI, and the enclosed JSON object containing some metadata and the actual LoraWAN MAC message.
+The first line shows the payload data in cleartext ('00000000'), while the latter indicates that the data is sent to the gateway.
+
+At the same time, on the gateway console we have:
+```
+16:46:53.316: LorawanGateway: processReceivedDatagramPacket(): pktInfo: {"time":"2021-10-15T16:46:53.316Z","tmst":4320,"freq":868.1,"chan":0,"rfch":1,"stat":1,"modu":"LORA","datr":"SF7BW125","codr":"4
+/5","rssi":-65,"lsnr":7.8,"size":17,"data":"QL70CyYAAAABgrZYaGIJdkM="}
+16:46:53.321: SemtechClient[7000]: sending: PUSH_DATA 2eac feffff0123450000 {"rxpk":[{"time":"2021-10-15T16:46:53.316Z","tmst":4320,"freq":868.1,"chan":0,"rfch":1,"stat":1,"modu":"LORA","datr":"SF7BW125","codr":"4/5","rssi":-65,"lsnr":7.8,"size":17,"data":"QL70CyYAAAABgrZYaGIJdkM="}]}
+16:46:53.395: SemtechClient[7000]: received: PUSH_ACK 2eac
+```
+
+That shows that a MAC packet is received from the device and it is sent to the network server using a Semtech PUSH_DATA packet. In particular the following information is reported: the Semtech packet type, the two-byte token, the gateway EUI, and the enclosed JSON object containing some metadata and the actual LoraWAN MAC message.
 The LoraWAN MAC message is included in base64 format. It can be decode as follows:
 ```
-  java -cp lorawan.jar test.LorawanParser -B QIpGASYAAAABADDq0cW1s0Q=
+  java -cp lorawan.jar test.LorawanParser -B QL70CyYAAAABgrZYaGIJdkM=
 
-        MACMessage: 408a460126000000010030ead1c5b5b344
+        MACMessage: 40bef40b260000000182b6586862097643
         MType: Unconfirmed Data Up
-        MacPayload: 8a460126000000010030ead1
-        MIC: c5b5b344
+        MacPayload: bef40b260000000182b65868
+        MIC: 62097643
         Data message payload:
-                DevAddr: 2601468a
+                DevAddr: 260bf4be
                 FCtrl: {"adr":false,"adrAckReq":false,"ack":false,"classB":false,"fOptsLen":0}
                 FCnt: 0
                 FPort: 1
-                EncryptedFRMPayload: 0030ead1
+                EncryptedFRMPayload: 82b65868				
 ```
 				
 The device data is encrypted. The data can be decrypted using the 'appSKey' of the session context created above.
-In this example the appSKey is '51b4868353692c8982a5ff6ccd77c5bc', and the data can decrypted by doing:
+In this example the appSKey is '2ab6ddbb0ae7032de57ceb3d9faa5aa1', and the data can decrypted by doing:
 ```
-  java -cp lorawan.jar test.LorawanParser -B QIpGASYAAAABADDq0cW1s0Q= -appskey 51b4868353692c8982a5ff6ccd77c5bc
+  java -cp lorawan.jar test.LorawanParser -B QL70CyYAAAABgrZYaGIJdkM= -appskey 2ab6ddbb0ae7032de57ceb3d9faa5aa1
 
-        MACMessage: 408a460126000000010030ead1c5b5b344
+        MACMessage: 40bef40b260000000182b6586862097643
         MType: Unconfirmed Data Up
-        MacPayload: 8a460126000000010030ead1
-        MIC: c5b5b344
+        MacPayload: bef40b260000000182b65868
+        MIC: 62097643
         Data message payload:
-                DevAddr: 2601468a
+                DevAddr: 260bf4be
                 FCtrl: {"adr":false,"adrAckReq":false,"ack":false,"classB":false,"fOptsLen":0}
                 FCnt: 0
                 FPort: 1
-                FRMPayload: 00000000
+                FRMPayload: 00000000 
 ```

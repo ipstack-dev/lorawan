@@ -9,6 +9,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.function.Consumer;
 
+import org.zoolu.net.InetAddrUtils;
 import org.zoolu.net.UdpProvider;
 import org.zoolu.net.UdpProviderListener;
 import org.zoolu.util.Bytes;
@@ -45,6 +46,7 @@ public class SemtechClient {
 	}
 
 	
+	static int DEFAULT_SERVER_PORT=1700; 
 	static long PULLDATA_TIMEOUT=20000;
 	static long STATUS_TIMEOUT=60000;
 	
@@ -61,16 +63,16 @@ public class SemtechClient {
 	
 	
 
-	public SemtechClient(String strId, float lati, float longi, int localPort, String remoteHost, int remotePort) throws SocketException, UnknownHostException {
-		this(strId,lati,longi,localPort,remoteHost,remotePort,null);
+	public SemtechClient(String strId, float lati, float longi, int localPort, String remoteServer) throws IOException {
+		this(strId,lati,longi,localPort,remoteServer,null);
 	}
 
 	
-	public SemtechClient(String strId, float lati, float longi, int localPort, String remoteHost, int remotePort, Consumer<TxPacketMessage> listener) throws SocketException, UnknownHostException {
+	public SemtechClient(String strId, float lati, float longi, int localPort, String remoteServer, Consumer<TxPacketMessage> listener) throws IOException {
 		id=Bytes.fromHex(strId);
 		this.listener=listener;
-		this.remoteIAddr=InetAddress.getByName(remoteHost);
-		this.remotePort=remotePort;
+		this.remoteIAddr=InetAddrUtils.parseSocketInetAddress(remoteServer);
+		this.remotePort=InetAddrUtils.parseSocketPort(remoteServer,DEFAULT_SERVER_PORT);
 		DatagramSocket udpSocket=localPort>0? new DatagramSocket(localPort) : new DatagramSocket();
 		udpProvider=new UdpProvider(udpSocket,new UdpProviderListener() {
 			@Override
