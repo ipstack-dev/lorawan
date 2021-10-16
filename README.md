@@ -7,7 +7,7 @@ The included virtual devices are software LoRaWAN devices capable to exchange  L
 The virtual gateway is a software LoRaWAN gateway that can be connected to a standard remote LoRaWAN backend system (network server, join server and application server) and relays data from/to some virtual devices.
 The gateway uses the Semtech protocol for the communication with the LoRaWAN network server.
 
-# Configuring the gateway
+# The gateway
 
 The LoRaWAN virtual gateway can be configured via a configuration file, e.g.:
 ```
