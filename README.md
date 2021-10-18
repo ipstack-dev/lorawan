@@ -40,10 +40,10 @@ Software devices that acts as standard LoRaWAN devices starting at MAC layer and
 Since the LoRaWAN physical layer is not present, the devices communicate with the virtual gateway by simply encapsulating LoRaWAN MAC packets within UDP datagrams.
 
 These types of virtual devices are currently provided:
- * CountDevice - simple device with readable and writable integer value that is incremented at each reading; the integer is encoded as four bytes in big-endian;
- * CurrentTimeDevice - simple device with read-only data that is the current time returned as YYYY-MM-dd HH:mm:ss string;
- * DataDevice - device with readable and writable data maintained in RAM; the data has to be passed as parameter (byte array as hexadecimal string);
- * FileDevice - device with readable and writable data stored in a file; the file name has to be passed as parameter;</li>
+ * Counter - simple device with readable and writable integer value that is incremented at each reading; the integer is encoded as four bytes in big-endian;
+ * CurrentTime - simple device with read-only data that is the current time returned as YYYY-MM-dd HH:mm:ss string;
+ * Data - device with readable and writable data maintained in RAM; the data has to be passed as parameter (byte array as hexadecimal string);
+ * FileData - device with readable and writable data stored in a file; the file name has to be passed as parameter;</li>
  * DraginoLHT65 - Dragino LHT65 with artificial temperature and humidity values;
  * DraginoLSE01 - Dragino LSE01 with artificial temperature and soil moisture values.
 
@@ -135,7 +135,7 @@ java -cp lorawan.jar test.LorawanDevice -f dev.cfg -v
 
 where the configuration file "dev.cfg" includes the same device values (devEui, appEui, etc.) configured in the TTN console.
 
-The device type should be one of the supported types (CountDevice, CurrentTimeDevice, DataDevice, FileDevice, DraginoLHT65, DraginoLSE01), or a new implemented device type. In the latter case the complete class name must be used as device type. For example:
+The device type should be one of the supported types (Counter, CurrentTime, Data, FileData, DraginoLHT65, DraginoLSE01), or a new implemented device type. In the latter case the complete class name must be used as device type. For example:
 ```java
 com.example.lorawan.device.MyNewDevice
 ```
@@ -144,7 +144,7 @@ com.example.lorawan.device.MyNewDevice
 
 Here is an example of fragment of the device console log that includes the device association and three data messages:  
 ```
-16:46:48.664: LorawanDevice: device: CounterDevice
+16:46:48.664: LorawanDevice: device: Counter
 16:46:48.995: LorawanDevice: processjoiningTimeout(): sending Join request message: MType: Join Request, MacPayload: 01000000000000000100110220fffffe5e91, MIC: f8e7646c
 16:46:53.294: LorawanDevice: processReceivedDatagramPacket(): received LoraWAN message: MType: JoinAccept, MacPayload: bc059c07528631e94e588f51dec49a4f32596b3578607b5f7e319aad, MIC: 0fc5b5f7
 16:46:53.295: LorawanDevice: processReceivedDatagramPacket(): associated
@@ -160,9 +160,9 @@ Here is an example of fragment of the device console log that includes the devic
 ```
 
 
-At the beginning of the log we can see the device type ('CounterDevice'):
+At the beginning of the log we can see the device type ('Counter'):
 ```
-16:46:48.664: DeviceClient: device: CounterDevice
+16:46:48.664: DeviceClient: device: Counter
 ```
 
 Then we can see when the device is associated:
