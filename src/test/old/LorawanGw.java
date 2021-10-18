@@ -14,7 +14,7 @@ import org.zoolu.util.SystemUtils;
 import org.zoolu.util.config.Configure;
 import org.zoolu.util.json.JsonUtils;
 
-import it.unipr.netsec.ipstack.lorawan.device.Device;
+import it.unipr.netsec.ipstack.lorawan.device.service.Service;
 import it.unipr.netsec.ipstack.lorawan.dragino.DraginoLHT65;
 import it.unipr.netsec.ipstack.lorawan.semtech.SemtechClient;
 import test.old.LorawanGwConfig;
@@ -136,10 +136,10 @@ public abstract class LorawanGw {
 		
 		if (devType.indexOf('.')<0) {
 			if (devType.startsWith("Dragino")) devType=DraginoLHT65.class.getPackage().getName()+'.'+devType;
-			else devType=Device.class.getPackage().getName()+'.'+devType;
+			else devType=Service.class.getPackage().getName()+'.'+devType;
 		}
 		Class<?> devClass=Class.forName(devType);
-		Device device=(Device)(devParamList.size()>0? devClass.getDeclaredConstructor(String[].class).newInstance((Object)(devParamList.toArray(new String[0]))) : devClass.newInstance());	
+		Service device=(Service)(devParamList.size()>0? devClass.getDeclaredConstructor(String[].class).newInstance((Object)(devParamList.toArray(new String[0]))) : devClass.newInstance());	
 		
 		SemtechClient client=new SemtechClient(gwEui,gwLatitude,gwLongitude,gwPort,appServer+':'+appPort);
 		new DeviceClient(device,Bytes.fromFormattedHex(devEui),null,Bytes.fromFormattedHex(appEui),Bytes.fromFormattedHex(appKey),fPort,client,devTime*1000);

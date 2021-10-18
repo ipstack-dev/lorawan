@@ -6,12 +6,12 @@ import java.util.Date;
 import org.zoolu.util.Bytes;
 import org.zoolu.util.Random;
 
-import it.unipr.netsec.ipstack.lorawan.device.Device;
+import it.unipr.netsec.ipstack.lorawan.device.service.Service;
 
 
 /** Dragino LSE01.
  */
-public class DraginoLSE01 implements Device {
+public class DraginoLSE01 implements Service {
 
 	DraginoLSE01Payload payload=null;
 	long startTime=System.currentTimeMillis();

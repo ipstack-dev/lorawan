@@ -29,7 +29,7 @@ import org.zoolu.util.Flags;
 
 public abstract class LorawanParser {
 	
-	enum PayloadType {LoraWAN, LHT65, LSE01};
+	enum PayloadType {LORAWAN, LHT65, LSE01};
 	
 	public static int SEMTECH_LORAWAN_PORT=1700;
 	
@@ -40,7 +40,7 @@ public abstract class LorawanParser {
 
 	private static String parsePayload(PayloadType type, byte[] data) {
 		switch (type) {
-		case LoraWAN : return parseLorawanMacMessage(data);
+		case LORAWAN : return parseLorawanMacMessage(data);
 		case LHT65 : return new DraginoLHT65Payload(data).toString();
 		case LSE01 : return new DraginoLSE01Payload(data).toString();
 		}
@@ -120,7 +120,7 @@ public abstract class LorawanParser {
 					out.println(parsePayload(PayloadType.LSE01,data));
 					break;
 				}
-				case LoraWAN : {
+				case LORAWAN : {
 					out.println("payload #"+count);
 					try {
 						String str=parseLorawanMacMessage(data);
@@ -243,7 +243,7 @@ public abstract class LorawanParser {
 			return;
 		}
 		// else
-		PayloadType payload_type=lht65_payload? PayloadType.LHT65 : lse01_payload? PayloadType.LSE01 : PayloadType.LoraWAN;
+		PayloadType payload_type=lht65_payload? PayloadType.LHT65 : lse01_payload? PayloadType.LSE01 : PayloadType.LORAWAN;
 		
 		if (app_key!=null) APP_KEY=Bytes.fromHex(app_key);
 		if (app_s_key!=null) SESSION_KEY=Bytes.fromHex(app_s_key);

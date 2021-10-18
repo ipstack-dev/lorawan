@@ -18,7 +18,7 @@ import it.unipr.netsec.ipstack.lorawan.LorawanJoinAcceptMessage;
 import it.unipr.netsec.ipstack.lorawan.LorawanJoinRequestMessage;
 import it.unipr.netsec.ipstack.lorawan.LorawanMacMessage;
 import it.unipr.netsec.ipstack.lorawan.SessionContext;
-import it.unipr.netsec.ipstack.lorawan.device.Device;
+import it.unipr.netsec.ipstack.lorawan.device.service.Service;
 import it.unipr.netsec.ipstack.lorawan.semtech.SemtechClient;
 import it.unipr.netsec.ipstack.lorawan.semtech.json.RxPacketInfo;
 import it.unipr.netsec.ipstack.lorawan.semtech.json.TxPacketMessage;
@@ -44,7 +44,7 @@ public class DeviceClient {
 	
 	static long JOINING_TIMEOUT=30*1000;
 
-	Device device;
+	Service device;
 	
 	String appCtxFile;
 	
@@ -69,11 +69,11 @@ public class DeviceClient {
 	long dataTimeout;
 
 	
-	public DeviceClient(Device device, byte[] devEUI, String appCtxFile, byte[] joinEUI, byte[] appKey, int fPort, SemtechClient semtechClient) throws IOException {
+	public DeviceClient(Service device, byte[] devEUI, String appCtxFile, byte[] joinEUI, byte[] appKey, int fPort, SemtechClient semtechClient) throws IOException {
 		this(device,devEUI,appCtxFile,joinEUI,appKey,fPort,semtechClient,DEFAULT_DATA_TIMEOUT);
 	}
 	
-	public DeviceClient(Device device, byte[] devEUI, String appCtxFile, byte[] joinEUI, byte[] appKey, int fPort, SemtechClient semtechClient, long timeout) throws IOException {
+	public DeviceClient(Service device, byte[] devEUI, String appCtxFile, byte[] joinEUI, byte[] appKey, int fPort, SemtechClient semtechClient, long timeout) throws IOException {
 		if (VERBOSE) log("device: "+device.getClass().getSimpleName());
 		this.device=device;
 		this.appCtxFile=appCtxFile;

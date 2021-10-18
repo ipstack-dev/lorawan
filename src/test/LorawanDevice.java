@@ -2,199 +2,29 @@ package test;
 
 
 import java.io.File;
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.zoolu.net.UdpProvider;
-import org.zoolu.net.UdpProviderListener;
 import org.zoolu.util.Bytes;
-import org.zoolu.util.Clock;
 import org.zoolu.util.Flags;
 import org.zoolu.util.LoggerLevel;
 import org.zoolu.util.LoggerWriter;
-import org.zoolu.util.Random;
 import org.zoolu.util.SystemUtils;
-import org.zoolu.util.Timer;
 import org.zoolu.util.config.Configure;
 import org.zoolu.util.json.JsonUtils;
 
-import it.unipr.netsec.ipstack.lorawan.ApplicationContext;
-import it.unipr.netsec.ipstack.lorawan.LorawanDataMessage;
-import it.unipr.netsec.ipstack.lorawan.LorawanJoinAcceptMessage;
-import it.unipr.netsec.ipstack.lorawan.LorawanJoinRequestMessage;
-import it.unipr.netsec.ipstack.lorawan.LorawanMacMessage;
-import it.unipr.netsec.ipstack.lorawan.SessionContext;
-import it.unipr.netsec.ipstack.lorawan.device.Device;
+import it.unipr.netsec.ipstack.lorawan.device.DataDevice;
+import it.unipr.netsec.ipstack.lorawan.device.LorawanClient;
+import it.unipr.netsec.ipstack.lorawan.device.service.Service;
 import it.unipr.netsec.ipstack.lorawan.dragino.DraginoLHT65;
 import test.old.DeviceClient;
 
 
-/** Virtual LoRaWAN device.
+/** LoRaWAN device.
  */
 public class LorawanDevice {
-	
-	/** Verbose mode */
-	public static boolean VERBOSE=false;
-	
-	/** Prints a message. */
-	private void log(String str) {
-		SystemUtils.log(LoggerLevel.INFO,this.getClass(),str);
-	}
-
-	
-	public static long DEFAULT_DATA_TIMEOUT=20*60*1000;
-	
-	static long JOINING_TIMEOUT=30*1000;
-
-	Device device;
-	
-	String appCtxFile;
-	
-	ApplicationContext appCtx;
-	
-	byte[] joinEUI;
-
-	byte[] appKey;
-
-	byte[] devEUI;
-	
-	byte[] devNonce;
-
-	SessionContext sessCtx;
-	
-	int fPort;
-	
-	boolean joined=false;
-	
-	long dataTimeout;
-
-	UdpProvider udpProvider;
-	SocketAddress gwSoaddr;
-	
-	
-	public LorawanDevice(Device device, byte[] devEUI, String appCtxFile, byte[] joinEUI, byte[] appKey, int fPort, SocketAddress gwSoaddr) throws IOException {
-		this(device,devEUI,appCtxFile,joinEUI,appKey,fPort,gwSoaddr,DEFAULT_DATA_TIMEOUT);
-	}
-	
-	public LorawanDevice(Device device, byte[] devEUI, String appCtxFile, byte[] joinEUI, byte[] appKey, int fPort, SocketAddress gwSoaddr, long timeout) throws IOException {
-		if (VERBOSE) log("device: "+device.getClass().getSimpleName());
-		this.device=device;
-		this.appCtxFile=appCtxFile;
-		this.appCtx=appCtxFile!=null? ApplicationContext.fromFile(appCtxFile) : null;
-		this.joinEUI=joinEUI!=null? joinEUI : appCtx.getJoinEUI();
-		this.appKey=appKey!=null? appKey : appCtx.getAppKey();
-		this.devEUI=devEUI!=null? devEUI : appCtx.getDevEUI();
-		this.devNonce=appCtx!=null? appCtx.getDevNonce() : Random.nextBytes(2);
-		this.fPort=fPort;
-		this.dataTimeout=timeout;
-		this.gwSoaddr=gwSoaddr;
-		
-		udpProvider=new UdpProvider(new DatagramSocket(),new UdpProviderListener() {
-			@Override
-			public void onReceivedPacket(UdpProvider udp, DatagramPacket packet) {
-				processReceivedDatagramPacket(packet);
-			}
-			@Override
-			public void onServiceTerminated(UdpProvider udp, Exception error) {
-				processDatagramServiceTerminated(error);
-			}		
-		});
-		// start joining procedure
-		processjoiningTimeout(null);
-	}
-	
-	private void processjoiningTimeout(Timer t) {
-		if (!joined) {
-			try {
-				LorawanJoinRequestMessage joinReq=getJoinMessage();
-				if (VERBOSE) log("processjoiningTimeout(): sending Join request message: "+joinReq);
-				sendLorawanMacMessage(joinReq);
-			}
-			catch (Exception e) {
-				e.printStackTrace();
-			}
-			Clock.getDefaultClock().newTimer(dataTimeout,this::processjoiningTimeout).start();			
-		}
-	}
-	
-	
-	private void processDataTimeout(Timer t) {
-		try {
-			LorawanMacMessage dataMsg=getDataMessage();
-			if (VERBOSE) log("processDataTimeout(): sending Data message: "+dataMsg);
-			sendLorawanMacMessage(dataMsg);
-		}
-		catch (GeneralSecurityException | IOException e) {
-			e.printStackTrace();
-		}
-		Clock.getDefaultClock().newTimer(dataTimeout,this::processDataTimeout).start();
-	}
-
-	
-	/** When a new UDP datagram is received. 
-	 * @throws IOException */
-	private void processReceivedDatagramPacket(DatagramPacket packet) {
-		byte[] data=new byte[packet.getLength()];
-		System.arraycopy(packet.getData(),packet.getOffset(),data,0,data.length);
-		LorawanMacMessage macMsg=LorawanMacMessage.parseMessage(data);
-		if (VERBOSE) log("processReceivedDatagramPacket(): received LoraWAN message: "+macMsg);
-		int type=macMsg.getMType();
-		if (type==LorawanMacMessage.TYPE_JOIN_ACCEPT) {
-			joined=true;
-			if (VERBOSE) log("processReceivedDatagramPacket(): associated");
-			LorawanJoinAcceptMessage joinAcceptMsg=(LorawanJoinAcceptMessage)macMsg;
-			try {
-				//joinAcceptMsg.decrypt(appCtx.getNwkKey());
-				//sessCtx=new SessionContext(joinAcceptMsg.getDevAddr(),appCtx.getNwkKey(),joinAcceptMsg.getJoinNonce(),joinAcceptMsg.getHomeNetID(),appCtx.getDevNonce());
-				joinAcceptMsg.decrypt(appKey);
-				sessCtx=new SessionContext(joinAcceptMsg.getDevAddr(),appKey,joinAcceptMsg.getJoinNonce(),joinAcceptMsg.getHomeNetID(),devNonce);
-				if (VERBOSE) log("processReceivedDatagramPacket(): new session context: "+sessCtx.toString());
-				// start sending data
-				processDataTimeout(null);
-			}
-			catch (GeneralSecurityException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	/** When the UDP provider terminates. */
-	private void processDatagramServiceTerminated(Exception error) {
-		if (VERBOSE) log("processDatagramServiceTerminated(): "+error);
-	}
-
-	
-	private void sendLorawanMacMessage(LorawanMacMessage macMsg) throws IOException {
-		byte[] data=macMsg.getBytes();
-		DatagramPacket datagramPacket=new DatagramPacket(data,data.length,gwSoaddr);
-		udpProvider.send(datagramPacket);
-	}
-
-	
-	private LorawanJoinRequestMessage getJoinMessage() throws GeneralSecurityException, IOException {
-		if (appCtx!=null) {
-			appCtx.incDevNonce();
-			appCtx.toFile(appCtxFile);
-			devNonce=appCtx.getDevNonce();
-		}
-		else Bytes.inc(devNonce);
-		//return new LorawanJoinRequestMessage(joinEUI,appCtx.getDevEUI(),appCtx.getDevNonce(),appCtx.getNwkKey());
-		return new LorawanJoinRequestMessage(joinEUI,devEUI,devNonce,appKey);
-	}
-
-	
-	private LorawanMacMessage getDataMessage() throws GeneralSecurityException {
-		byte[] data=device.getData();
-		if (VERBOSE) log("data: "+(data!=null?Bytes.toHex(data):null));		
-		return new LorawanDataMessage(LorawanMacMessage.TYPE_UNCORFIRMED_DATA_UP,sessCtx.getDevAddr(),sessCtx.incFCntUp(),fPort,data,sessCtx.getAppSKey(),sessCtx.getFNwkSIntKey());
-	}
 	
 	
 	public static void main(String[] args) throws Exception {
@@ -206,7 +36,7 @@ public class LorawanDevice {
 		int devPort=flags.getInteger("-devPort",4444,"port","local port for communicating with virtual devices");
 		
 		String devEui=flags.getString("-deveui",null,"EUI","device EUI");
-		String devType=flags.getString("-devtype","CurrentTimeDevice","type","device type (types: CounterDevice, CurrentTimeDevice, DataDevice, FileDevice, DraginoLHT65, DraginoLSE01; default type is 'CurrentTimeDevice')");
+		String devType=flags.getString("-devtype","CurrentTime","type","device type (types: Counter, CurrentTime, Data, FileData, DraginoLHT65, DraginoLSE01; default type is 'CurrentTimeDevice')");
 		// device specific parameters
 		List<String> devParamList=new ArrayList<>();
 		String[] devParams=flags.getStringArray("-devparams",null,"num-and-values","device specific parameters preceded by their number (e.g. '2 aaa bbb' for two parameters 'aaa' and 'bbb')");
@@ -229,7 +59,7 @@ public class LorawanDevice {
 		
 		if (verbose) {
 			SystemUtils.setDefaultLogger(new LoggerWriter(System.out,LoggerLevel.INFO));
-			LorawanDevice.VERBOSE=true;
+			LorawanClient.VERBOSE=true;
 		}
 
 		if (help) {
@@ -261,11 +91,11 @@ public class LorawanDevice {
 		
 		if (devType.indexOf('.')<0) {
 			if (devType.startsWith("Dragino")) devType=DraginoLHT65.class.getPackage().getName()+'.'+devType;
-			else devType=Device.class.getPackage().getName()+'.'+devType;
+			else devType=Service.class.getPackage().getName()+'.'+devType;
 		}
 		Class<?> devClass=Class.forName(devType);
-		Device device=(Device)(devParamList.size()>0? devClass.getDeclaredConstructor(String[].class).newInstance((Object)(devParamList.toArray(new String[0]))) : devClass.newInstance());		
-		new LorawanDevice(device,Bytes.fromFormattedHex(devEui),null,Bytes.fromFormattedHex(appEui),Bytes.fromFormattedHex(appKey),fPort,new InetSocketAddress("127.0.0.1",devPort),devTime*1000);
+		Service service=(Service)(devParamList.size()>0? devClass.getDeclaredConstructor(String[].class).newInstance((Object)(devParamList.toArray(new String[0]))) : devClass.newInstance());		
+		new DataDevice(Bytes.fromFormattedHex(devEui),null,Bytes.fromFormattedHex(appEui),Bytes.fromFormattedHex(appKey),fPort,new InetSocketAddress("127.0.0.1",devPort),service,devTime*1000);
 	}
 
 }

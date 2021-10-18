@@ -6,7 +6,7 @@ import java.util.Date;
 
 import org.zoolu.util.Random;
 
-import it.unipr.netsec.ipstack.lorawan.device.Device;
+import it.unipr.netsec.ipstack.lorawan.device.service.Service;
 
 
 /** Dragino LHT65.
@@ -17,7 +17,7 @@ import it.unipr.netsec.ipstack.lorawan.device.Device;
  * <li>Power consumption: Idle: 3uA. Transmit: max 130mA.</li>
  * </ul>
  */
-public class DraginoLHT65 implements Device {
+public class DraginoLHT65 implements Service {
 	
 	DraginoLHT65Payload payload=null;	
 	long startTime=System.currentTimeMillis();

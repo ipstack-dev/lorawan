@@ -8,8 +8,8 @@ import org.zoolu.util.LoggerLevel;
 import org.zoolu.util.LoggerWriter;
 import org.zoolu.util.SystemUtils;
 
-import it.unipr.netsec.ipstack.lorawan.device.CurrentTimeDevice;
-import it.unipr.netsec.ipstack.lorawan.device.Device;
+import it.unipr.netsec.ipstack.lorawan.device.service.CurrentTime;
+import it.unipr.netsec.ipstack.lorawan.device.service.Service;
 import it.unipr.netsec.ipstack.lorawan.semtech.SemtechClient;
 
 
@@ -37,7 +37,7 @@ public abstract class LorawanTest {
 		String appKey="69f50c4c63feb58483e10b487dcfeaa3"; // TTN 'unipr-test6' application key
 		long interTime=60000;
 		String devCtxFile="cfg/DEV01.cfg";
-		Device device=new CurrentTimeDevice();
+		Service device=new CurrentTime();
 		new DeviceClient(device,null,devCtxFile,Bytes.fromFormattedHex(appEUI),Bytes.fromFormattedHex(appKey),2,client,interTime);
 		
 	}
