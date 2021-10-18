@@ -135,9 +135,7 @@ java -cp lorawan.jar test.LorawanDevice -f dev.cfg -v
 
 where the configuration file "dev.cfg" includes the same device values (devEui, appEui, etc.) configured in the TTN console.
 
-The device type should be one of the supported types (CountDevice, CurrentTimeDevice, DataDevice, FileDevice, DraginoLHT65, DraginoLSE01), or a new implemented device type. In the latter case the complete class name must be used as device type.
-
-Note: for example:
+The device type should be one of the supported types (CountDevice, CurrentTimeDevice, DataDevice, FileDevice, DraginoLHT65, DraginoLSE01), or a new implemented device type. In the latter case the complete class name must be used as device type. For example:
 ```java
 com.example.lorawan.device.MyNewDevice
 ```
