@@ -15,16 +15,17 @@ import org.zoolu.util.SystemUtils;
 import org.zoolu.util.config.Configure;
 import org.zoolu.util.json.JsonUtils;
 
-import it.unipr.netsec.ipstack.lorawan.device.DataDevice;
-import it.unipr.netsec.ipstack.lorawan.device.LorawanClient;
-import it.unipr.netsec.ipstack.lorawan.device.service.Service;
-import it.unipr.netsec.ipstack.lorawan.dragino.DraginoLHT65;
-import test.old.DeviceClient;
+import it.unipr.netsec.thingsstack.lorawan.device.DataDevice;
+import it.unipr.netsec.thingsstack.lorawan.device.LorawanClient;
+import it.unipr.netsec.thingsstack.lorawan.device.service.Service;
+import it.unipr.netsec.thingsstack.lorawan.dragino.DraginoLHT65;
 
 
 /** LoRaWAN device.
  */
 public class LorawanDevice {
+	
+	public static long DEFAULT_DATA_TIMEOUT=20*60*1000;
 	
 	
 	public static void main(String[] args) throws Exception {
@@ -47,7 +48,7 @@ public class LorawanDevice {
 			devParam=flags.getString("-devparam",null,null,null);
 		}
 		
-		long devTime=flags.getLong("-t",DeviceClient.DEFAULT_DATA_TIMEOUT/1000,"time","data transmission inter-time [sec] (default is 1200 = 20min)");
+		long devTime=flags.getLong("-t",DEFAULT_DATA_TIMEOUT/1000,"time","data transmission inter-time [sec] (default is 1200 = 20min)");
 		int fPort=flags.getInteger("-fport",1,"port","value of FPort field in the LoraWAN DATA messages (default is 1)");
 		//String devCtxFile=flags.getString("-devctx",null,"file","device context file containing the DevEUI and the current DevNonce value");
 

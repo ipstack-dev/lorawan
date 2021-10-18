@@ -20,9 +20,9 @@ import org.zoolu.util.SystemUtils;
 import org.zoolu.util.config.Configure;
 import org.zoolu.util.json.JsonUtils;
 
-import it.unipr.netsec.ipstack.lorawan.semtech.SemtechClient;
-import it.unipr.netsec.ipstack.lorawan.semtech.json.RxPacketInfo;
-import it.unipr.netsec.ipstack.lorawan.semtech.json.TxPacketMessage;
+import it.unipr.netsec.thingsstack.lorawan.semtech.SemtechClient;
+import it.unipr.netsec.thingsstack.lorawan.semtech.json.RxPacketInfo;
+import it.unipr.netsec.thingsstack.lorawan.semtech.json.TxPacketMessage;
 
 
 /** Virtual LoRaWAN gateway.

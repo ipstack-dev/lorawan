@@ -12,16 +12,16 @@ import org.zoolu.util.Random;
 import org.zoolu.util.SystemUtils;
 import org.zoolu.util.Timer;
 
-import it.unipr.netsec.ipstack.lorawan.ApplicationContext;
-import it.unipr.netsec.ipstack.lorawan.LorawanDataMessage;
-import it.unipr.netsec.ipstack.lorawan.LorawanJoinAcceptMessage;
-import it.unipr.netsec.ipstack.lorawan.LorawanJoinRequestMessage;
-import it.unipr.netsec.ipstack.lorawan.LorawanMacMessage;
-import it.unipr.netsec.ipstack.lorawan.SessionContext;
-import it.unipr.netsec.ipstack.lorawan.device.service.Service;
-import it.unipr.netsec.ipstack.lorawan.semtech.SemtechClient;
-import it.unipr.netsec.ipstack.lorawan.semtech.json.RxPacketInfo;
-import it.unipr.netsec.ipstack.lorawan.semtech.json.TxPacketMessage;
+import it.unipr.netsec.thingsstack.lorawan.ApplicationContext;
+import it.unipr.netsec.thingsstack.lorawan.LorawanDataMessage;
+import it.unipr.netsec.thingsstack.lorawan.LorawanJoinAcceptMessage;
+import it.unipr.netsec.thingsstack.lorawan.LorawanJoinRequestMessage;
+import it.unipr.netsec.thingsstack.lorawan.LorawanMacMessage;
+import it.unipr.netsec.thingsstack.lorawan.SessionContext;
+import it.unipr.netsec.thingsstack.lorawan.device.service.Service;
+import it.unipr.netsec.thingsstack.lorawan.semtech.SemtechClient;
+import it.unipr.netsec.thingsstack.lorawan.semtech.json.RxPacketInfo;
+import it.unipr.netsec.thingsstack.lorawan.semtech.json.TxPacketMessage;
 
 
 /** Device endpoint within a LoraWAN gateway.

@@ -14,11 +14,9 @@ import org.zoolu.util.SystemUtils;
 import org.zoolu.util.config.Configure;
 import org.zoolu.util.json.JsonUtils;
 
-import it.unipr.netsec.ipstack.lorawan.device.service.Service;
-import it.unipr.netsec.ipstack.lorawan.dragino.DraginoLHT65;
-import it.unipr.netsec.ipstack.lorawan.semtech.SemtechClient;
-import test.old.LorawanGwConfig;
-import test.old.LorawanGwJson;
+import it.unipr.netsec.thingsstack.lorawan.device.service.Service;
+import it.unipr.netsec.thingsstack.lorawan.dragino.DraginoLHT65;
+import it.unipr.netsec.thingsstack.lorawan.semtech.SemtechClient;
 
 
 /** LoRaWAN virtual gateway and LoRaWAN virtual devices.

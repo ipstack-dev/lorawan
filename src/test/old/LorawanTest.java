@@ -8,9 +8,9 @@ import org.zoolu.util.LoggerLevel;
 import org.zoolu.util.LoggerWriter;
 import org.zoolu.util.SystemUtils;
 
-import it.unipr.netsec.ipstack.lorawan.device.service.CurrentTime;
-import it.unipr.netsec.ipstack.lorawan.device.service.Service;
-import it.unipr.netsec.ipstack.lorawan.semtech.SemtechClient;
+import it.unipr.netsec.thingsstack.lorawan.device.service.CurrentTime;
+import it.unipr.netsec.thingsstack.lorawan.device.service.Service;
+import it.unipr.netsec.thingsstack.lorawan.semtech.SemtechClient;
 
 
 public abstract class LorawanTest {
