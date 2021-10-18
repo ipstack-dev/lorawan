@@ -1,11 +1,12 @@
 # LoRaWAN virtual gateway and virtual devices
 
-This library contains a LoRaWAN virtual gateway and virtual devices, plus some LoRaWAN related utilities.
+Implementation of a LoRaWAN virtual gateway and virtual devices, plus some LoRaWAN related utilities. It provides also the implementation of the LoRaWAN protocol stack including the MAC layer and above, together with other LoRaWAN related protocols. 
 
-The included virtual devices are software LoRaWAN devices capable to exchange  LoRaWAN MAC packets with a (virtual) gateway possibly connected to LoRaWAN backend system.
+The provided virtual devices are software LoRaWAN devices capable to exchange LoRaWAN MAC packets with a (virtual) gateway connected to a LoRaWAN backend system.
 
-The virtual gateway is a software LoRaWAN gateway that can be connected to a standard remote LoRaWAN backend system (network server, join server and application server) and relays data from/to some virtual devices.
+The provided virtual gateway is a software LoRaWAN gateway that can be connected to a standard remote LoRaWAN backend system (network server, join server and application server) and relays data from/to some virtual devices.
 The gateway uses the Semtech protocol for the communication with the LoRaWAN network server.
+
 
 # Virtual gateway
 
@@ -33,7 +34,6 @@ Note that if no network server is specified, TTN 'router.eu.thethings.network' i
 The gateway communicates with virtual devices using UDP protocol. The default gateway UDP port is 1700. 
 
 
-
 # Virtual devices
 
 Are software devices that acts as standard LoRaWAN devices starting to the LoRaWAN MAC layer. Since the LoRaWAN is not present, LoRaWAN MAC packets are exchanged with the virtual gateway by simply encapsulating LoRaWAN MAC packets within UDP datagrams.
@@ -51,7 +51,6 @@ Self-made virtual devices can be also used by simply specifying the complete cla
 ```java
 it.unipr.netsec.ipstack.lorawan.device.CurrentTimeDevice
 ```
-
 
 
 # Configuring the gateway and devices on TTN
