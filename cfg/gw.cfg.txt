@@ -15,10 +15,7 @@ gwLongitude=
 
 gwPort= 7000
 
-# Host name or IP address of the LorWAN Network Server.
+# Host address the LorWAN Network Server.
 
-appServer= router.eu.thethings.network
+networkServer= eu1.cloud.thethings.network
 
-# UDP port of the Network Server.
-
-appPort= 1700
