@@ -10,12 +10,12 @@ The gateway uses the Semtech protocol for the communication with the LoRaWAN net
 
 The virtual gateway can be configured via a configuration file, e.g.:
 ```
-java -cp lorawan.jar test.LorawanGateway -f gw.cfg
+java -cp lorawan-all.jar test.LorawanGateway -f gw.cfg
 ```
 
 or by using command line options, e.g.:
 ```
-java -cp lorawan.jar test.LorawanGateway -gweui FEFFFFabcdef0000 -netsrv router.eu.thethings.network
+java -cp lorawan-all.jar test.LorawanGateway -gweui FEFFFFabcdef0000 -netsrv router.eu.thethings.network
 ```
 
 Replaces the gateway EUI and network server address with the proper values.
@@ -93,7 +93,7 @@ Now we are ready to start the virtual gateway and devices.
 
 For starting the gateway:
 ```
-java -cp lorawan.jar test.LorawanGateway -f gw.cfg -v
+java -cp lorawan-all.jar test.LorawanGateway -f gw.cfg -v
 ```
 
 where the configuration file "gw.cfg" includes the same gateway values (gwEui and networkServer) configured in the TTN console.
@@ -130,7 +130,7 @@ Here is an example of fragment of the gateway console log that includes the asso
 
 For starting a device:
 ```
-java -cp lorawan.jar test.LorawanDevice -f dev.cfg -v
+java -cp lorawan-all.jar test.LorawanDevice -f dev.cfg -v
 ```
 
 where the configuration file "dev.cfg" includes the same device values (devEui, appEui, etc.) configured in the TTN console.
@@ -190,7 +190,7 @@ At the same time, on the gateway console we have:
 That shows that a MAC packet is received from the device and it is sent to the network server using a Semtech PUSH_DATA packet. In particular the following information is reported: the Semtech packet type, the two-byte token, the gateway EUI, and the enclosed JSON object containing some metadata and the actual LoraWAN MAC message.
 The LoraWAN MAC message is included in base64 format. It can be decode as follows:
 ```
-  java -cp lorawan.jar test.LorawanParser -B QL70CyYAAAABgrZYaGIJdkM=
+  java -cp lorawan-all.jar test.LorawanParser -B QL70CyYAAAABgrZYaGIJdkM=
 
         MACMessage: 40bef40b260000000182b6586862097643
         MType: Unconfirmed Data Up
@@ -207,7 +207,7 @@ The LoraWAN MAC message is included in base64 format. It can be decode as follow
 The device data is encrypted. The data can be decrypted using the 'appSKey' of the session context created above.
 In this example the appSKey is '2ab6ddbb0ae7032de57ceb3d9faa5aa1', and the data can decrypted by doing:
 ```
-  java -cp lorawan.jar test.LorawanParser -B QL70CyYAAAABgrZYaGIJdkM= -appskey 2ab6ddbb0ae7032de57ceb3d9faa5aa1
+  java -cp lorawan-all.jar test.LorawanParser -B QL70CyYAAAABgrZYaGIJdkM= -appskey 2ab6ddbb0ae7032de57ceb3d9faa5aa1
 
         MACMessage: 40bef40b260000000182b6586862097643
         MType: Unconfirmed Data Up
