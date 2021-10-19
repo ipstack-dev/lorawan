@@ -6,21 +6,24 @@ import java.net.URISyntaxException;
 
 import org.zoolu.util.Bytes;
 
-import it.unipr.netsec.mjcoap.coap.client.CoapClient;
-import it.unipr.netsec.mjcoap.coap.message.CoapRequestMethod;
-import it.unipr.netsec.mjcoap.coap.message.CoapResponse;
-import it.unipr.netsec.mjcoap.coap.provider.CoapURI;
+import it.unipr.netsec.thingsstack.coap.client.CoapClient;
+import it.unipr.netsec.thingsstack.coap.message.CoapRequestMethod;
+import it.unipr.netsec.thingsstack.coap.message.CoapResponse;
+import it.unipr.netsec.thingsstack.coap.provider.CoapURI;
 
 
 /** Data is obtained from a remote CoAP server.
  */
 public class CoapData implements Service {
 	
+	/** Default CoAP request timeout */
+	public long TIMEOUT=2000;
+	
 	/** CoAP URL of the server resource */
 	String coapResource;
 	
 	/** CoAP client */
-	//CoapClient coapClient;
+	CoapClient coapClient;
 
 	
 	/** Creates a new service. 
@@ -38,17 +41,20 @@ public class CoapData implements Service {
 	 */
 	public CoapData(String coapResource) throws SocketException {
 		this.coapResource=coapResource;
-		//coapClient=new CoapClient();
+		coapClient=new CoapClient();
+		coapClient.setTimeout(TIMEOUT);
 	}
 	
 
 	@Override
 	public byte[] getData() {
 		try {
-			CoapResponse resp=new CoapClient().request(CoapRequestMethod.GET,new CoapURI(coapResource),-1);
-			return resp.getPayload();
+			//CoapClient coapClient=new CoapClient();
+			//coapClient.setTimeout(TIMEOUT);
+			CoapResponse resp=coapClient.request(CoapRequestMethod.GET,new CoapURI(coapResource),-1);
+			return resp!=null? resp.getPayload() : null;
 		}
-		catch (URISyntaxException | SocketException e) {
+		catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -58,9 +64,11 @@ public class CoapData implements Service {
 	@Override
 	public void setData(byte[] data) {
 		try {
-			new CoapClient().request(CoapRequestMethod.PUT,new CoapURI(coapResource),-1,data);
+			//CoapClient coapClient=new CoapClient();
+			//coapClient.setTimeout(TIMEOUT);
+			coapClient.request(CoapRequestMethod.PUT,new CoapURI(coapResource),-1,data);
 		}
-		catch (URISyntaxException | SocketException e) {
+		catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
 	}

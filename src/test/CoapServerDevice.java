@@ -12,10 +12,10 @@ import org.zoolu.util.LoggerLevel;
 import org.zoolu.util.LoggerWriter;
 import org.zoolu.util.SystemUtils;
 
-import it.unipr.netsec.mjcoap.coap.message.CoapRequest;
-import it.unipr.netsec.mjcoap.coap.message.CoapResponseCode;
-import it.unipr.netsec.mjcoap.coap.server.AbstractCoapServer;
-import it.unipr.netsec.mjcoap.coap.server.CoapServer;
+import it.unipr.netsec.thingsstack.coap.message.CoapRequest;
+import it.unipr.netsec.thingsstack.coap.message.CoapResponseCode;
+import it.unipr.netsec.thingsstack.coap.server.AbstractCoapServer;
+import it.unipr.netsec.thingsstack.coap.server.CoapServer;
 import it.unipr.netsec.thingsstack.lorawan.device.LorawanClient;
 import it.unipr.netsec.thingsstack.lorawan.device.LorawanClientListener;
 

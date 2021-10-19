@@ -67,14 +67,20 @@ public class DataDevice {
 	
 	
 	private void processDataTimeout(Timer t) {
-		try {
-			byte[] data=service.getData();
-			if (data!=null) client.sendData(data);
-			else log("No data to send");
-		}
-		catch (GeneralSecurityException | IOException e) {
-			e.printStackTrace();
-		}
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					byte[] data=service.getData();
+					if (data!=null) client.sendData(data);
+					else log("No data to send");
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}
+		}).start();
 		Clock.getDefaultClock().newTimer(timeout,this::processDataTimeout).start();
 	}
 
