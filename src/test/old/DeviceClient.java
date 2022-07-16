@@ -12,22 +12,22 @@ import org.zoolu.util.Random;
 import org.zoolu.util.SystemUtils;
 import org.zoolu.util.Timer;
 
-import it.unipr.netsec.thingsstack.lorawan.ApplicationContext;
-import it.unipr.netsec.thingsstack.lorawan.LorawanDataMessage;
-import it.unipr.netsec.thingsstack.lorawan.LorawanJoinAcceptMessage;
-import it.unipr.netsec.thingsstack.lorawan.LorawanJoinRequestMessage;
-import it.unipr.netsec.thingsstack.lorawan.LorawanMacMessage;
-import it.unipr.netsec.thingsstack.lorawan.SessionContext;
-import it.unipr.netsec.thingsstack.lorawan.device.service.Service;
+import it.unipr.netsec.thingsstack.lorawan.device.service.DataService;
+import it.unipr.netsec.thingsstack.lorawan.mac.ApplicationContext;
+import it.unipr.netsec.thingsstack.lorawan.mac.LorawanDataMessage;
+import it.unipr.netsec.thingsstack.lorawan.mac.LorawanJoinAcceptMessage;
+import it.unipr.netsec.thingsstack.lorawan.mac.LorawanJoinRequestMessage;
+import it.unipr.netsec.thingsstack.lorawan.mac.LorawanMacMessage;
+import it.unipr.netsec.thingsstack.lorawan.mac.SessionContext;
 import it.unipr.netsec.thingsstack.lorawan.semtech.SemtechClient;
 import it.unipr.netsec.thingsstack.lorawan.semtech.json.RxPacketInfo;
 import it.unipr.netsec.thingsstack.lorawan.semtech.json.TxPacketMessage;
 
 
-/** Device endpoint within a LoraWAN gateway.
+/** Device endpoint within a LoRaWAN gateway.
  * <p>
- * It uses the LoraWAN protocol to join a LoraWAN network server and to exchange data with an application server.
- * The LoraWAN messages are exchanges with the server endpoits using the Semtech protocol over UDP/IP.
+ * It uses the LoRaWAN protocol to join a LoRaWAN network server and to exchange data with an application server.
+ * The LoRaWAN messages are exchanges with the server endpoits using the Semtech protocol over UDP/IP.
  */
 public class DeviceClient {
 	
@@ -44,7 +44,7 @@ public class DeviceClient {
 	
 	static long JOINING_TIMEOUT=30*1000;
 
-	Service device;
+	DataService device;
 	
 	String appCtxFile;
 	
@@ -69,11 +69,11 @@ public class DeviceClient {
 	long dataTimeout;
 
 	
-	public DeviceClient(Service device, byte[] devEUI, String appCtxFile, byte[] joinEUI, byte[] appKey, int fPort, SemtechClient semtechClient) throws IOException {
+	public DeviceClient(DataService device, byte[] devEUI, String appCtxFile, byte[] joinEUI, byte[] appKey, int fPort, SemtechClient semtechClient) throws IOException {
 		this(device,devEUI,appCtxFile,joinEUI,appKey,fPort,semtechClient,DEFAULT_DATA_TIMEOUT);
 	}
 	
-	public DeviceClient(Service device, byte[] devEUI, String appCtxFile, byte[] joinEUI, byte[] appKey, int fPort, SemtechClient semtechClient, long timeout) throws IOException {
+	public DeviceClient(DataService device, byte[] devEUI, String appCtxFile, byte[] joinEUI, byte[] appKey, int fPort, SemtechClient semtechClient, long timeout) throws IOException {
 		if (VERBOSE) log("device: "+device.getClass().getSimpleName());
 		this.device=device;
 		this.appCtxFile=appCtxFile;
@@ -103,9 +103,9 @@ public class DeviceClient {
 	}
 	
 	private void processReceivedLorawanMacMessage(TxPacketMessage pktMsg) {
-		if (VERBOSE) log("received LoraWAN message: pktInfo: "+pktMsg);
+		if (VERBOSE) log("received LoRaWAN message: pktInfo: "+pktMsg);
 		LorawanMacMessage macMsg=LorawanMacMessage.parseMessage(Base64.decode(pktMsg.getTxpk().getData()));
-		if (VERBOSE) log("received LoraWAN message: "+macMsg);
+		if (VERBOSE) log("received LoRaWAN message: "+macMsg);
 		int type=macMsg.getMType();
 		if (type==LorawanMacMessage.TYPE_JOIN_ACCEPT) {
 			joined=true;

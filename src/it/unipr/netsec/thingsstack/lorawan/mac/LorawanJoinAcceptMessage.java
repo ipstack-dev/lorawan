@@ -1,4 +1,5 @@
-package it.unipr.netsec.thingsstack.lorawan;
+package it.unipr.netsec.thingsstack.lorawan.mac;
+
 
 import java.security.GeneralSecurityException;
 
@@ -7,7 +8,8 @@ import javax.crypto.IllegalBlockSizeException;
 
 import org.zoolu.util.Bytes;
 
-/** LoraWAN Join Accept message.
+
+/** LoRaWAN Join Accept message.
  */
 public class LorawanJoinAcceptMessage extends LorawanMacMessage {
 	
@@ -18,14 +20,14 @@ public class LorawanJoinAcceptMessage extends LorawanMacMessage {
 	byte[] decryptedMic=null;
 
 
-	/** Creates a new message.
+	/** Creates a new Accept message.
 	 * @param joinNonce
 	 * @param homeNetId
 	 * @param devAddr
 	 * @param dlSettings
 	 * @param rxDelay
 	 * @param cfList
-	 * @param key AppKey (LoraWAN 1.0.2) or NwkKey (LoraWAN 1.1) key 
+	 * @param key AppKey (LoRaWAN 1.0.2) or NwkKey (LoRaWAN 1.1) key 
 	 * @throws GeneralSecurityException */
 	public LorawanJoinAcceptMessage(byte[] joinNonce, byte[] homeNetId, byte[] devAddr, int dlSettings, int rxDelay, byte[] cfList, byte[] key) throws GeneralSecurityException {
 		super(TYPE_JOIN_ACCEPT);
@@ -38,13 +40,13 @@ public class LorawanJoinAcceptMessage extends LorawanMacMessage {
 		mic=Bytes.copy(ciphertext,payload.length,4);		
 	}
 
-	/** Creates a new message.
+	/** Creates a new Accept message.
 	 * @param data the buffer containing the packet */
 	public LorawanJoinAcceptMessage(byte[] data) {
 		this(data,0,data.length);
 	}
 
-	/** Creates a new message.
+	/** Creates a new Accept message.
 	 * @param buf the buffer containing the packet
 	 * @param off the offset within the buffer
 	 * @param len packet length */

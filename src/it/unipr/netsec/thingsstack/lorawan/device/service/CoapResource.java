@@ -14,7 +14,7 @@ import it.unipr.netsec.thingsstack.coap.provider.CoapURI;
 
 /** Data is obtained from a remote CoAP server.
  */
-public class CoapData implements Service {
+public class CoapResource implements DataService {
 	
 	/** Default CoAP request timeout */
 	public long TIMEOUT=2000;
@@ -30,7 +30,7 @@ public class CoapData implements Service {
 	 * @param coapResource CoAP URL of the server resource
 	 * @throws SocketException 
 	 */
-	public CoapData(String[] args) throws SocketException {
+	public CoapResource(String[] args) throws SocketException {
 		this(args[0]);
 	}
 
@@ -39,7 +39,7 @@ public class CoapData implements Service {
 	 * @param coapResource CoAP URL of the server resource
 	 * @throws SocketException 
 	 */
-	public CoapData(String coapResource) throws SocketException {
+	public CoapResource(String coapResource) throws SocketException {
 		this.coapResource=coapResource;
 		coapClient=new CoapClient();
 		coapClient.setTimeout(TIMEOUT);

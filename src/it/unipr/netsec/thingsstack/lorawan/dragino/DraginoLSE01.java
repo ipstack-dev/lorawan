@@ -6,12 +6,13 @@ import java.util.Date;
 import org.zoolu.util.Bytes;
 import org.zoolu.util.Random;
 
-import it.unipr.netsec.thingsstack.lorawan.device.service.Service;
+import it.unipr.netsec.thingsstack.lorawan.device.service.DataUtils;
+import it.unipr.netsec.thingsstack.lorawan.device.service.DataService;
 
 
 /** Dragino LSE01.
  */
-public class DraginoLSE01 implements Service {
+public class DraginoLSE01 implements DataService {
 
 	DraginoLSE01Payload payload=null;
 	long startTime=System.currentTimeMillis();
@@ -55,8 +56,8 @@ public class DraginoLSE01 implements Service {
 		count++;
 		if (payload!=null) return payload.getBytes();
 		// else
-		double battery=DraginoLHT65.getBattery(3.4,4000,System.currentTimeMillis()-startTime,count); // maxPower=4000mAh, maxVoltage=3.4V?
-		double temperature=DraginoLHT65.getTemperature(new Date());
+		double battery=DataUtils.getBattery(3.4,4000,System.currentTimeMillis()-startTime,count); // maxPower=4000mAh, maxVoltage=3.4V?
+		double temperature=DataUtils.getTemperature(new Date());
 		double humidity=75+Random.nextInt(150)/10;
 		return new DraginoLSE01Payload(battery,humidity,temperature,0).getBytes();
 	}

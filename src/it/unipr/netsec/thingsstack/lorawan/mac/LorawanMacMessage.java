@@ -1,4 +1,4 @@
-package it.unipr.netsec.thingsstack.lorawan;
+package it.unipr.netsec.thingsstack.lorawan.mac;
 
 
 import java.security.GeneralSecurityException;
@@ -9,17 +9,19 @@ import it.unipr.netsec.ipstack.net.Address;
 import it.unipr.netsec.ipstack.net.Packet;
 
 
-/** LoraWAN MAC message, that is the PHY payload (PHYPayload) at PHY layer.
+/** LoRaWAN MAC message, that is the PHY payload (PHYPayload) at PHY layer.
  * <p>
- * It is formed by a MAC header (MHDR), a MAC payload (MACPayload), and a MIC trailer.
+ * It is formed by a MAC header (MHDR) (1 byte), a MAC payload (MACPayload), and a MIC trailer (4 bytes).
+ * The size of MACPayload is greater than or equal to 7 bytes.
  * <p>
- * The MHDR and MIC are 1 and 4 bytes long, respectively. The MACPayload length is greater than or equal to 7 bytes.
+ * In case of LoRaWAN v1.1 or greater, in Join-Accept messages the MIC is encrypted with the payload.
  */
 public abstract class LorawanMacMessage implements Packet<Address> {
 
 	/** Major version (LoRaWAN R1) */
 	protected static final int MAJOR_VERSION=0;
 
+	
 	/** Join Request type */
 	public static final int TYPE_JOIN_REQUEST=0;
 
@@ -137,6 +139,28 @@ public abstract class LorawanMacMessage implements Packet<Address> {
 			case TYPE_PROPRIETARY : return "Proprietary";
 			default : return String.valueOf(type);
 		}
+	}
+	
+	/** Whether a given packet type is uplink.
+	 * @param type packet type
+	 * @return true if uplink packet */
+	public static boolean isUplink(int type) {
+		switch (type) {
+		case TYPE_JOIN_REQUEST : return true;
+		case TYPE_JOIN_ACCEPT : return false;
+		case TYPE_UNCORFIRMED_DATA_UP : return true;
+		case TYPE_UNCORFIRMED_DATA_DOWN : return false;
+		case TYPE_CORFIRMED_DATA_UP : return true;
+		case TYPE_CORFIRMED_DATA_DOWN : return false;
+		case TYPE_REJOIN_REQUEST : return true;
+		default : return true;
+		}
+	}
+	
+	/** Whether it is uplink.
+	 * @return true if uplink packet */
+	public boolean isUplink() {
+		return isUplink(type);
 	}
 	
 	/** Gets MAC header.

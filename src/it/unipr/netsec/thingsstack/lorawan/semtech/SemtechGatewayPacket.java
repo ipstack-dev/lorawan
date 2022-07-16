@@ -4,7 +4,7 @@ package it.unipr.netsec.thingsstack.lorawan.semtech;
 import org.zoolu.util.Bytes;
 
 
-/** Semtech-LoraWAN generic packet with 'gateway' field.
+/** Semtech-LoRaWAN generic packet with 'gateway' field.
  */
 public abstract class SemtechGatewayPacket extends SemtechPacket {
 
@@ -27,7 +27,7 @@ public abstract class SemtechGatewayPacket extends SemtechPacket {
 	 * @param off the offset within the buffer */
 	protected SemtechGatewayPacket(byte[] buf, int off) {
 		super(0xff&buf[off+3],Bytes.toInt16(buf,off+1));
-		if (buf[off]!=VERSION) throw new RuntimeException("Unsupported Semtech-LoraWAN protocol version: "+(0xff&buf[off]));
+		if (buf[off]!=VERSION) throw new RuntimeException("Unsupported Semtech-LoRaWAN protocol version: "+(0xff&buf[off]));
 		gw_addr=Bytes.copy(buf,off+4,8);
 	}
 	

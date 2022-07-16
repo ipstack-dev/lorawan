@@ -12,4 +12,5 @@ public class LorawanDeviceConfig {
 	public long devTime;
 	public int fport;
 
+	public String gwSoaddr;
 }

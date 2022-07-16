@@ -1,7 +1,13 @@
 package it.unipr.netsec.thingsstack.lorawan.dragino;
 
 
+import java.util.ArrayList;
+
 import org.zoolu.util.Bytes;
+import org.zoolu.util.json.JsonMember;
+import org.zoolu.util.json.JsonNumber;
+import org.zoolu.util.json.JsonObject;
+import org.zoolu.util.json.JsonString;
 
 
 /** Dragino LHT65 payload.
@@ -188,6 +194,17 @@ public class DraginoLHT65Payload {
 		sb.append(separator);
 		sb.append("Ext_sensor: ").append(getExternalInfo());
 		return sb.toString();
+	}
+	
+	/**
+	 * @return a JSON object representing the payload data */
+	public String toJson() {
+		ArrayList<JsonMember> members= new ArrayList<>();
+		members.add(new JsonMember("battery",new JsonNumber(getBatteryVoltage())));
+		members.add(new JsonMember("temperature",new JsonNumber(getTemperature())));
+		members.add(new JsonMember("humidity",new JsonNumber(getHumidity())));
+		members.add(new JsonMember("Ext_sensor",new JsonString(getExternalInfo())));
+		return new JsonObject(members).toString();
 	}
 
 }

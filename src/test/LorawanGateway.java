@@ -50,17 +50,18 @@ public class LorawanGateway {
 	 * @param strId
 	 * @param lati
 	 * @param longi
-	 * @param deviceLocalPort
-	 * @param localPort
+	 * @param localServerPort
+	 * @param clientPort
 	 * @param remoteHost
 	 * @param remotePort
 	 * @throws SocketException
 	 * @throws UnknownHostException
 	 */
-	public LorawanGateway(String strId, float lati, float longi, int deviceLocalPort, int localPort, String remoteServer) throws IOException {
-		semtechClient=new SemtechClient(strId,lati,longi,localPort,remoteServer);
-		semtechClient.setListener(this::processReceivedTxPacketMessage);
-		DatagramSocket udpSocket=deviceLocalPort>0? new DatagramSocket(deviceLocalPort) : new DatagramSocket();
+	public LorawanGateway(String strId, float lati, float longi, int localServerPort, int clientPort, String remoteServer) throws IOException {
+		//semtechClient=new SemtechClient(strId,lati,longi,clientPort,remoteServer);
+		//semtechClient.setListener(this::processReceivedTxPacketMessage);
+		semtechClient=new SemtechClient(strId,lati,longi,clientPort,remoteServer,this::processReceivedTxPacketMessage);
+		DatagramSocket udpSocket=localServerPort>0? new DatagramSocket(localServerPort) : new DatagramSocket();
 		udpProvider=new UdpProvider(udpSocket,new UdpProviderListener() {
 			@Override
 			public void onReceivedPacket(UdpProvider udp, DatagramPacket packet) {
@@ -116,15 +117,15 @@ public class LorawanGateway {
 	public static void main(String[] args) throws Exception {
 		Flags flags=new Flags(args);
 
-		String gwEui=flags.getString("-gweui",null,"EUI","gateway EUI (eg. XXXXXXfffeYYYYYY, where: XXXXXX=MAC[0-2] and YYYYYY=MAC[3-5] from 48bit MAC address)");
-		String[] gwCoordinates=flags.getStringTuple("-gwpos",2,null,"lati longi","gateway latitude and longitude");
-		float gwLatitude=gwCoordinates!=null? Float.parseFloat(gwCoordinates[0]) : 44.76492876F;
-		float gwLongitude=gwCoordinates!=null? Float.parseFloat(gwCoordinates[1]) : 10.30846590F;
-		int gwPort=flags.getInteger("-gwport",-1,"port","local UDP port");
+		String eui=flags.getString("-eui",null,"EUI","gateway EUI (eg. XXXXXXfffeYYYYYY, where: XXXXXX=MAC[0-2] and YYYYYY=MAC[3-5] from 48bit MAC address)");
+		String[] coordinates=flags.getStringTuple("-gwpos",2,null,"lati longi","gateway latitude and longitude");
+		float latitude=coordinates!=null? Float.parseFloat(coordinates[0]) : 44.76492876F;
+		float longitude=coordinates!=null? Float.parseFloat(coordinates[1]) : 10.30846590F;
+		int port=flags.getInteger("-port",7000,"port","local UDP port for communicating with virtual devices");
 
-		String networkServer=flags.getString("-netsrv","router.eu.thethings.network","address","address (and port, if not default 1700) of the network server (default is 'router.eu.thethings.network')");
+		String networkServer=flags.getString("-netsrv","router.eu.thethings.network","address","address (and port, default 1700) of the network server (default is 'router.eu.thethings.network')");
 		
-		int devPort=flags.getInteger("-devport",4444,"port","local port for communicating with virtual devices");
+		int clientPort=flags.getInteger("-cport",-1,"port","local Semtech client port for communicating with the network");
 				
 		String configJsonFile=flags.getString("-j",null,"file","gateway configuration JSON file");
 		String configFile=flags.getString("-f",null,"file","gateway configuration file");
@@ -145,23 +146,23 @@ public class LorawanGateway {
 		
 		if (configJsonFile!=null) {
 			LorawanGatewayJson cfg=(LorawanGatewayJson)JsonUtils.fromJsonFile(new File(configJsonFile),LorawanGatewayJson.class);
-			gwEui=cfg.gw.eui;
-			gwLatitude=cfg.gw.latitude;
-			gwLongitude=cfg.gw.longitude;
-			gwPort=cfg.gw.port;
+			eui=cfg.gw.eui;
+			latitude=cfg.gw.latitude;
+			longitude=cfg.gw.longitude;
+			port=cfg.gw.port;
 			networkServer=cfg.app.networkServer;
 		}
 		else
 		if (configFile!=null) {
 			LorawanGatewayConfig cfg=(LorawanGatewayConfig)Configure.fromFile(new File(configFile),LorawanGatewayConfig.class);
-			gwEui=cfg.gwEui;
-			gwLatitude=cfg.gwLatitude;
-			gwLongitude=cfg.gwLongitude;
-			gwPort=cfg.gwPort;
+			eui=cfg.gwEui;
+			latitude=cfg.gwLatitude;
+			longitude=cfg.gwLongitude;
+			port=cfg.gwPort;
 			networkServer=cfg.networkServer;
 		}
 		
-		new LorawanGateway(gwEui,gwLatitude,gwLongitude,devPort,gwPort,networkServer);		
+		new LorawanGateway(eui,latitude,longitude,port,clientPort,networkServer);		
 	}
 
 }

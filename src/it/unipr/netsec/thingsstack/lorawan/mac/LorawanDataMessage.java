@@ -1,14 +1,12 @@
-package it.unipr.netsec.thingsstack.lorawan;
+package it.unipr.netsec.thingsstack.lorawan.mac;
 
 
 import java.security.GeneralSecurityException;
 
-import javax.crypto.spec.SecretKeySpec;
-
 import org.zoolu.util.Bytes;
 
 
-/** LoraWAN Data message.
+/** LoRaWAN Data message.
  */
 public class LorawanDataMessage extends LorawanMacMessage {
 
@@ -16,7 +14,7 @@ public class LorawanDataMessage extends LorawanMacMessage {
 	LorawanDataMessagePayload dataMessagePayload;
 
 	
-	/** Creates a new message.
+	/** Creates a new Data message.
 	 * @param devAddr Device address
 	 * @param fCnt Frame counter (FCnt)
 	 * @param fPort Frame port (FPort)
@@ -28,7 +26,7 @@ public class LorawanDataMessage extends LorawanMacMessage {
 		this(type,devAddr,new FCtrl(false,false,false,false,0),fCnt,null,fPort,data,eKey,iKey);
 	}
 
-	/** Creates a new message.
+	/** Creates a new Data message.
 	 * @param type Data message type (UNCORFIRMED_DATA_UP, UNCORFIRMED_DATA_DOWN, UORFIRMED_DATA_UP, or CORFIRMED_DATA_DOWN)
 	 * @param devAddr Device address
 	 * @param fCtrl Frame control (FCtrl)
@@ -41,7 +39,7 @@ public class LorawanDataMessage extends LorawanMacMessage {
 	 * @throws GeneralSecurityException */
 	public LorawanDataMessage(int type, byte[] devAddr, FCtrl fCtrl, int fCnt, byte[] fOpts, int fPort, byte[] data, byte[] eKey, byte[] iKey) throws GeneralSecurityException {
 		super(type);
-		dataMessagePayload=new LorawanDataMessagePayload(devAddr,fCtrl,fCnt,fOpts,fPort,data,eKey);
+		dataMessagePayload=new LorawanDataMessagePayload(devAddr,fCtrl,fCnt,fOpts,fPort,isUplink(type),data,eKey);
 		payload=dataMessagePayload.getBytes();
 		byte[] B0=Bytes.concat(new byte[]{(byte)0x49,0,0,0,0,(byte)(type%2)},Bytes.reverseOrderCopy(devAddr),Bytes.fromInt32LittleEndian(fCnt),new byte[]{0,(byte)(payload.length+1)});
 		/*AesCmacJuho cmac=new AesCmacJuho();
@@ -51,13 +49,13 @@ public class LorawanDataMessage extends LorawanMacMessage {
 		mic=Bytes.copy(new AesCmac(iKey).doFinal(Bytes.concat(B0,new byte[]{(byte)getMHdr()},payload)),0,4);
 	}
 
-	/** Creates a new message.
+	/** Creates a new Data message.
 	 * @param data the buffer containing the packet */
 	public LorawanDataMessage(byte[] data) {
 		this(data,0,data.length);
 	}
 
-	/** Creates a new message.
+	/** Creates a new Data message.
 	 * @param buf the buffer containing the packet
 	 * @param off the offset within the buffer
 	 * @param len packet length */

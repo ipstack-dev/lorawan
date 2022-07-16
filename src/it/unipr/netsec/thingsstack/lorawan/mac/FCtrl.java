@@ -1,4 +1,4 @@
-package it.unipr.netsec.thingsstack.lorawan;
+package it.unipr.netsec.thingsstack.lorawan.mac;
 
 
 import org.zoolu.util.json.JsonUtils;

@@ -1,10 +1,12 @@
-package it.unipr.netsec.thingsstack.lorawan;
+package it.unipr.netsec.thingsstack.lorawan.mac;
+
 
 import java.security.GeneralSecurityException;
 
 import org.zoolu.util.Bytes;
 
-/** LoraWAN Join Request message.
+
+/** LoRaWAN Join Request message.
  */
 public class LorawanJoinRequestMessage extends LorawanMacMessage {
 	
@@ -12,11 +14,11 @@ public class LorawanJoinRequestMessage extends LorawanMacMessage {
 	LorawanJoinRequestMessagePayload joinRequestPayload=null;
 
 	
-	/** Creates a new payload.
+	/** Creates a new Join message.
 	 * @param joinEui JoinEUI
 	 * @param devEui DevEUI
 	 * @param devNonce DevNonce
-	 * @param key AppKey (LoraWAN 1.0.2) or NwkKey (LoraWAN 1.1) key 
+	 * @param key AppKey (LoRaWAN 1.0.2) or NwkKey (LoRaWAN 1.1) key 
 	 * @throws GeneralSecurityException */
 	public LorawanJoinRequestMessage(byte[] joinEui, byte[] devEui, byte[] devNonce, byte[] key) throws GeneralSecurityException {
 		super(TYPE_JOIN_REQUEST);
@@ -25,13 +27,13 @@ public class LorawanJoinRequestMessage extends LorawanMacMessage {
 		mic=Bytes.copy(new AesCmac(key).doFinal(Bytes.concat(new byte[]{(byte)getMHdr()},payload)),0,4);
 	}
 	
-	/** Creates a new message.
+	/** Creates a new Join message.
 	 * @param data the buffer containing the packet */
 	public LorawanJoinRequestMessage(byte[] data) {
 		this(data,0,data.length);
 	}
 
-	/** Creates a new message.
+	/** Creates a new Join message.
 	 * @param buf the buffer containing the packet
 	 * @param off the offset within the buffer
 	 * @param len packet length */

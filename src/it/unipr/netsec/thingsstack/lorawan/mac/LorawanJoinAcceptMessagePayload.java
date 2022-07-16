@@ -1,9 +1,11 @@
-package it.unipr.netsec.thingsstack.lorawan;
+package it.unipr.netsec.thingsstack.lorawan.mac;
 
 
 import org.zoolu.util.Bytes;
 
 
+/** Payload of a Join Accept message.
+ */
 public class LorawanJoinAcceptMessagePayload {
 
 	/** JoinNonce (3 bytes) */

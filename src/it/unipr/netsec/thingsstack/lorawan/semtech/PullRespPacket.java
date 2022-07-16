@@ -2,7 +2,7 @@ package it.unipr.netsec.thingsstack.lorawan.semtech;
 
 import org.zoolu.util.Bytes;
 
-/** Semtech-LoraWAN PULL_RESP packet.
+/** Semtech-LoRaWAN PULL_RESP packet.
  */
 public class PullRespPacket extends SemtechPacket implements SemtechJsonObjectPacket {
 	

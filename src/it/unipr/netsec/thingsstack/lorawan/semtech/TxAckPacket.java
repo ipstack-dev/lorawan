@@ -2,7 +2,7 @@ package it.unipr.netsec.thingsstack.lorawan.semtech;
 
 
 
-/** Semtech-LoraWAN TX_ACK packet.
+/** Semtech-LoRaWAN TX_ACK packet.
  */
 public class TxAckPacket extends SemtechGatewayPacket implements SemtechJsonObjectPacket {
 	

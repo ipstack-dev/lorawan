@@ -1,17 +1,15 @@
-package it.unipr.netsec.thingsstack.lorawan;
+package it.unipr.netsec.thingsstack.lorawan.mac;
 
 
 import java.security.GeneralSecurityException;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
 
 import org.zoolu.util.Bytes;
 import org.zoolu.util.json.JsonUtils;
 
 
-/** LoraWAN Session Context.
+/** LoRaWAN Session Context.
  * It contains Network Session and Application Session.
  * <p>
  * The Network Session consists of the following state:

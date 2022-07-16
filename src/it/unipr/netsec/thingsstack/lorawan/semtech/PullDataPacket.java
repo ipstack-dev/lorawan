@@ -2,7 +2,7 @@ package it.unipr.netsec.thingsstack.lorawan.semtech;
 
 
 
-/** Semtech-LoraWAN PULL_DATA packet.
+/** Semtech-LoRaWAN PULL_DATA packet.
  */
 public class PullDataPacket extends SemtechGatewayPacket {
 	

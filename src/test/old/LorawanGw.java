@@ -14,7 +14,7 @@ import org.zoolu.util.SystemUtils;
 import org.zoolu.util.config.Configure;
 import org.zoolu.util.json.JsonUtils;
 
-import it.unipr.netsec.thingsstack.lorawan.device.service.Service;
+import it.unipr.netsec.thingsstack.lorawan.device.service.DataService;
 import it.unipr.netsec.thingsstack.lorawan.dragino.DraginoLHT65;
 import it.unipr.netsec.thingsstack.lorawan.semtech.SemtechClient;
 
@@ -78,7 +78,7 @@ public abstract class LorawanGw {
 		}
 		
 		long devTime=flags.getLong("-t",DeviceClient.DEFAULT_DATA_TIMEOUT/1000,"time","data transmission inter-time [sec] (default is 1200 = 20min)");
-		int fPort=flags.getInteger("-fport",1,"port","value of FPort field in the LoraWAN DATA messages (default is 1)");
+		int fPort=flags.getInteger("-fport",1,"port","value of FPort field in the LoRaWAN DATA messages (default is 1)");
 		//String devCtxFile=flags.getString("-devctx",null,"file","device context file containing the DevEUI and the current DevNonce value");
 
 		String configJsonFile=flags.getString("-j",null,"file","gateway configuration JSON file");
@@ -134,10 +134,10 @@ public abstract class LorawanGw {
 		
 		if (devType.indexOf('.')<0) {
 			if (devType.startsWith("Dragino")) devType=DraginoLHT65.class.getPackage().getName()+'.'+devType;
-			else devType=Service.class.getPackage().getName()+'.'+devType;
+			else devType=DataService.class.getPackage().getName()+'.'+devType;
 		}
 		Class<?> devClass=Class.forName(devType);
-		Service device=(Service)(devParamList.size()>0? devClass.getDeclaredConstructor(String[].class).newInstance((Object)(devParamList.toArray(new String[0]))) : devClass.newInstance());	
+		DataService device=(DataService)(devParamList.size()>0? devClass.getDeclaredConstructor(String[].class).newInstance((Object)(devParamList.toArray(new String[0]))) : devClass.newInstance());	
 		
 		SemtechClient client=new SemtechClient(gwEui,gwLatitude,gwLongitude,gwPort,appServer+':'+appPort);
 		new DeviceClient(device,Bytes.fromFormattedHex(devEui),null,Bytes.fromFormattedHex(appEui),Bytes.fromFormattedHex(appKey),fPort,client,devTime*1000);

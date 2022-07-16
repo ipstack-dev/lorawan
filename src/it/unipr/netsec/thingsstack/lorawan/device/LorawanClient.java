@@ -16,13 +16,14 @@ import org.zoolu.util.Random;
 import org.zoolu.util.SystemUtils;
 import org.zoolu.util.Timer;
 
-import it.unipr.netsec.thingsstack.lorawan.ApplicationContext;
-import it.unipr.netsec.thingsstack.lorawan.LorawanDataMessage;
-import it.unipr.netsec.thingsstack.lorawan.LorawanJoinAcceptMessage;
-import it.unipr.netsec.thingsstack.lorawan.LorawanJoinRequestMessage;
-import it.unipr.netsec.thingsstack.lorawan.LorawanMacMessage;
-import it.unipr.netsec.thingsstack.lorawan.SessionContext;
-import it.unipr.netsec.thingsstack.lorawan.device.service.Service;
+import it.unipr.netsec.thingsstack.lorawan.device.service.DataService;
+import it.unipr.netsec.thingsstack.lorawan.mac.ApplicationContext;
+import it.unipr.netsec.thingsstack.lorawan.mac.LorawanDataMessage;
+import it.unipr.netsec.thingsstack.lorawan.mac.LorawanDataMessagePayload;
+import it.unipr.netsec.thingsstack.lorawan.mac.LorawanJoinAcceptMessage;
+import it.unipr.netsec.thingsstack.lorawan.mac.LorawanJoinRequestMessage;
+import it.unipr.netsec.thingsstack.lorawan.mac.LorawanMacMessage;
+import it.unipr.netsec.thingsstack.lorawan.mac.SessionContext;
 
 
 /** LoRaWAN client.
@@ -106,9 +107,10 @@ public class LorawanClient {
 	}
 	
 	
-	/** Starts a join procedure.
+	/** Starts join procedure.
 	 */
 	public void join() {
+		joined=false;
 		try {
 			LorawanJoinRequestMessage joinReq=getJoinMessage();
 			if (VERBOSE) log("join(): sending Join request message: "+joinReq);
@@ -132,6 +134,7 @@ public class LorawanClient {
 	 * @throws GeneralSecurityException
 	 */
 	public void sendData(byte[] data) throws IOException, GeneralSecurityException {
+		if (!joined) throw new IOException("Tried to send data while the device didn't joined yet");
 		sendMacMessage(getDataMessage(data));
 	}
 
@@ -154,7 +157,7 @@ public class LorawanClient {
 		byte[] data=new byte[packet.getLength()];
 		System.arraycopy(packet.getData(),packet.getOffset(),data,0,data.length);
 		LorawanMacMessage macMsg=LorawanMacMessage.parseMessage(data);
-		if (VERBOSE) log("processReceivedDatagramPacket(): received LoraWAN message: "+macMsg);
+		if (VERBOSE) log("processReceivedDatagramPacket(): received LoRaWAN message: "+macMsg);
 		int type=macMsg.getMType();
 		if (type==LorawanMacMessage.TYPE_JOIN_ACCEPT) {
 			joined=true;
@@ -172,7 +175,24 @@ public class LorawanClient {
 				e.printStackTrace();
 			}
 		}
-		// if incoming data
+		else
+		if (type==LorawanMacMessage.TYPE_UNCORFIRMED_DATA_DOWN) {
+			LorawanDataMessagePayload dataMessagePayload=new LorawanDataMessagePayload(macMsg.getMacPayload());
+			if (VERBOSE) log("processReceivedDatagramPacket(): encrypted payload: "+dataMessagePayload.toString());
+			//byte[] framePayload=dataMessagePayload.getFramePayload();
+			if (dataMessagePayload.getFramePayload()!=null) {
+				try {
+					dataMessagePayload.decryptFramePayload(sessCtx.getAppSKey());
+					byte[] framePayload= dataMessagePayload.getFramePayload();
+					if (VERBOSE) log("processReceivedDatagramPacket(): decrypted frame payload: "+Bytes.toHex(framePayload));
+					if (listener!=null) listener.onReceivedData(this,framePayload);
+				}
+				catch (GeneralSecurityException e) {
+					e.printStackTrace();
+				}				
+			}
+		}
+		// process other message types
 		// TODO
 	}
 

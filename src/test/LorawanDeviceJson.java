@@ -7,6 +7,7 @@ public class LorawanDeviceJson {
 
 	public AppInfo app;
 	
+	public String gwSoaddr;
 	
 	public static class AppInfo {
 		public String eui;

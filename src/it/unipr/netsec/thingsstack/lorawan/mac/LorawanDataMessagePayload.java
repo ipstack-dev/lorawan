@@ -1,4 +1,4 @@
-package it.unipr.netsec.thingsstack.lorawan;
+package it.unipr.netsec.thingsstack.lorawan.mac;
 
 
 import java.security.GeneralSecurityException;
@@ -29,6 +29,9 @@ public class LorawanDataMessagePayload {
 	/** Frame port (FPort) */
 	protected int fPort=-1;
 	
+	/** Whether it is an uplink frame */
+	protected boolean uplink;
+
 	/** Decrypted frame payload (FRMPayload) */
 	protected byte[] decryptedPayload=null;
 
@@ -46,12 +49,13 @@ public class LorawanDataMessagePayload {
 	 * @param payload Frame payload (FRMPayload)
 	 * @param key encryption key (use NwkSKey/NwkSEncKey if FPort=0, AppSKey if FPort>0)
 	 * @throws GeneralSecurityException */
-	public LorawanDataMessagePayload(byte[] devAddr, FCtrl fCtrl, int fCnt, byte[] fOpts, int fPort, byte[] payload, byte[] key) throws GeneralSecurityException {
+	public LorawanDataMessagePayload(byte[] devAddr, FCtrl fCtrl, int fCnt, byte[] fOpts, int fPort, boolean uplink, byte[] payload, byte[] key) throws GeneralSecurityException {
 		this.devAddr=devAddr;
 		this.fCtrl=fCtrl;
 		this.fCnt=fCnt;
 		this.fOpts=fOpts;
 		this.fPort=fPort;
+		this.uplink=uplink;
 		decryptedPayload=payload;
 		encryptedPayload=encrypt(key,payload);
 	}
@@ -177,7 +181,7 @@ public class LorawanDataMessagePayload {
 	 * @throws GeneralSecurityException */
 	private byte[] encrypt(byte[] key, byte[] src) throws GeneralSecurityException {
 		byte[] dst=new byte[src.length];
-		byte[] stream=getKeyStream(key,true,devAddr,fCnt,src.length);
+		byte[] stream=getKeyStream(key,uplink,devAddr,fCnt,src.length);
 		for (int i=0; i<src.length; i++) {
 			dst[i]=(byte)(src[i]^stream[i]);
 		}

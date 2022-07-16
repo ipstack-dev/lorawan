@@ -1,4 +1,4 @@
-package it.unipr.netsec.thingsstack.lorawan;
+package it.unipr.netsec.thingsstack.lorawan.mac;
 
 
 import java.io.IOException;
@@ -8,7 +8,7 @@ import org.zoolu.util.config.Configure;
 import org.zoolu.util.json.JsonUtils;
 
 
-/** LoraWAN Application Context.
+/** LoRaWAN Application Context.
  * <p>
  * It includes:
  * <ul>

@@ -4,13 +4,13 @@ import it.unipr.netsec.ipstack.analyzer.LibpcapRecord;
 import it.unipr.netsec.ipstack.ethernet.EthPacket;
 import it.unipr.netsec.ipstack.ip4.Ip4Packet;
 import it.unipr.netsec.ipstack.udp.UdpPacket;
-import it.unipr.netsec.thingsstack.lorawan.LorawanDataMessagePayload;
-import it.unipr.netsec.thingsstack.lorawan.LorawanJoinAcceptMessage;
-import it.unipr.netsec.thingsstack.lorawan.LorawanJoinAcceptMessagePayload;
-import it.unipr.netsec.thingsstack.lorawan.LorawanJoinRequestMessagePayload;
-import it.unipr.netsec.thingsstack.lorawan.LorawanMacMessage;
 import it.unipr.netsec.thingsstack.lorawan.dragino.DraginoLHT65Payload;
 import it.unipr.netsec.thingsstack.lorawan.dragino.DraginoLSE01Payload;
+import it.unipr.netsec.thingsstack.lorawan.mac.LorawanDataMessagePayload;
+import it.unipr.netsec.thingsstack.lorawan.mac.LorawanJoinAcceptMessage;
+import it.unipr.netsec.thingsstack.lorawan.mac.LorawanJoinAcceptMessagePayload;
+import it.unipr.netsec.thingsstack.lorawan.mac.LorawanJoinRequestMessagePayload;
+import it.unipr.netsec.thingsstack.lorawan.mac.LorawanMacMessage;
 import it.unipr.netsec.thingsstack.lorawan.semtech.SemtechJsonObjectPacket;
 import it.unipr.netsec.thingsstack.lorawan.semtech.SemtechPacket;
 
@@ -29,7 +29,7 @@ import org.zoolu.util.Flags;
 
 public abstract class LorawanParser {
 	
-	enum PayloadType {LORAWAN, LHT65, LSE01};
+	enum DataType { LHT65_PAYLOAD, LSE01_PAYLOAD, MAC_FRAME };
 	
 	public static int SEMTECH_LORAWAN_PORT=1700;
 	
@@ -38,27 +38,42 @@ public abstract class LorawanParser {
 
 
 
-	private static String parsePayload(PayloadType type, byte[] data) {
-		switch (type) {
-		case LORAWAN : return parseLorawanMacMessage(data);
-		case LHT65 : return new DraginoLHT65Payload(data).toString();
-		case LSE01 : return new DraginoLSE01Payload(data).toString();
-		}
-		return null; // never
+	/** Parses application payload.
+	 * @param type the type of the payload
+	 * @param payload the payload
+	 * @return the analyzed payload */
+	private static String parseApplicationPayload(DataType type, String payload, boolean base64) {
+		byte[] data= base64? Base64.decode(payload) : Bytes.fromHex(payload);
+		return parseApplicationPayload(type,data);
 	}
 
 	
-	/** Parses a LoraWAN MAC message (i.e. PHYPayload).
-	 * @param data the MAC message encoded in base64
+	/** Parses application payload.
+	 * @param type the type of the payload
+	 * @param payload the payload
 	 * @return the analyzed data */
-	public static String parseLorawanMacMessage(String data64) {
-		byte[] macMsg=Base64.decode(data64);
+	private static String parseApplicationPayload(DataType type, byte[] payload) {
+		switch (type) {
+		case LHT65_PAYLOAD : return new DraginoLHT65Payload(payload).toString();
+		case LSE01_PAYLOAD : return new DraginoLSE01Payload(payload).toString();
+		default : throw new RuntimeException("Unknown payload format");
+		}
+		//return null; // never
+	}
+
+	
+	/** Parses a LoRaWAN MAC message (i.e. a PHYPayload).
+	 * @param data the MAC message
+	 * @param base64 whether the message is base64 encoded (or hexadecimal)
+	 * @return the analyzed data */
+	public static String parseLorawanMacMessage(String data, boolean base64) {
+		byte[] macMsg= base64? Base64.decode(data) : Bytes.fromHex(data);
 		String str="\tMACMessage: "+Bytes.toHex(macMsg)+'\n';
 		return str+parseLorawanMacMessage(macMsg);
 	}
 	
 
-	/** Parses a LoraWAN MAC message (i.e. PHYPayload).
+	/** Parses a LoRaWAN MAC message (i.e. PHYPayload).
 	 * @param data the MAC message
 	 * @return the analyzed data */
 	public static String parseLorawanMacMessage(byte[] data) {
@@ -103,7 +118,7 @@ public abstract class LorawanParser {
 	}
 	
 	
-	private static void processHexPayloadFile(String hex_file, PayloadType type, PrintStream out) throws IOException {
+	private static void processHexFile(String hex_file, DataType type, PrintStream out) throws IOException {
 		BufferedReader in=new BufferedReader(new FileReader(hex_file));
 		String line=in.readLine();
 		int count=0;
@@ -111,27 +126,20 @@ public abstract class LorawanParser {
 			count++;
 			line=line.trim();
 			byte[] data=Bytes.fromHex(line);
-			switch (type) {
-				case LHT65 : {
-					out.println(parsePayload(PayloadType.LHT65,data));
-					break;
+			if (type==DataType.MAC_FRAME) {
+				out.println("payload #"+count);
+				try {
+					String str=parseLorawanMacMessage(data);
+					out.println("\tframe: "+line);
+					out.println(str);
 				}
-				case LSE01 : {
-					out.println(parsePayload(PayloadType.LSE01,data));
-					break;
-				}
-				case LORAWAN : {
-					out.println("payload #"+count);
-					try {
-						String str=parseLorawanMacMessage(data);
-						out.println("\tframe: "+line);
-						out.println(str);
-					}
-					catch (Exception e) {
-						out.println("Error in frame: "+line);
-						e.printStackTrace();
-					}					
-				}
+				catch (Exception e) {
+					out.println("Error in frame: "+line);
+					e.printStackTrace();
+				}						
+			}
+			else {
+				out.println(parseApplicationPayload(type,data));
 			}
 			line=in.readLine();
 		}
@@ -182,14 +190,14 @@ public abstract class LorawanParser {
 			if (index>0) {
 				String data64=jsonBody.substring(index+7).split("\"")[1];
 				jsonBody+="\n\tbase64-MACMessage: "+data64;
-				jsonBody+="\n"+parseLorawanMacMessage(data64);
+				jsonBody+="\n"+parseLorawanMacMessage(data64,true);
 			}
 		}
 		return Bytes.toHex(Bytes.fromInt16(token))+" "+semPkt.getTypeString()+(jsonBody!=null? " "+jsonBody : "");
 	}
 
 	
-	public static void semtechToLoraWAN(String pcap_file, int lorawan_port) throws IOException {
+	public static void semtechToLorawan(String pcap_file, int lorawan_port) throws IOException {
 		LibpcapReader pcapReader=new LibpcapReader(pcap_file);
 		int semtechCount=0;
 		int lorawanCount=0;
@@ -220,52 +228,51 @@ public abstract class LorawanParser {
 			}
 		}
 		out.println();
-		out.println("Processed "+total+" packets. Found "+lorawanCount+" LoraWAN packets out of "+semtechCount+" Semtech packets.");
+		out.println("Processed "+total+" packets. Found "+lorawanCount+" LoRaWAN packets out of "+semtechCount+" Semtech packets.");
 	}
 
 	
 	public static void main(String[] args) throws IOException {
-		Flags flags=new Flags(args);
-		int lorawan_port=flags.getInteger("-p",SEMTECH_LORAWAN_PORT,"port","UDP port of the Semtech-LoraWAN trace");
-		boolean help=flags.getBoolean("-h","prints this message");		
-		String hex_payload=flags.getString("-X",null,"payload","parses a given hexadecimal LoraWAN payload");
-		String base64_payload=flags.getString("-B",null,"payload","parses a given base64-encoded LoraWAN payload");
-		String hex_file=flags.getString("-hex",null,"file","parses a file with hexadecimal payloads");
-		String pcap_file=flags.getString("-pcap",null,"file","parses a pcap file");
-		boolean semtech_to_lorawan=flags.getBoolean("-semtolora","extraxts LoraWAN payloads from Semtech-LoraWAN packets in a pcap file");	
-		boolean lht65_payload=flags.getBoolean("-LHT65","payload is from Dragino LHT65 sensor");	
-		boolean lse01_payload=flags.getBoolean("-LSE01","payload is from Dragino LSE01 sensor");	
-		String app_key=flags.getString("-appkey",null,"key","the join/applidcation AppKey");
-		String app_s_key=flags.getString("-appskey",null,"key","the application session key AppSKey");
+		Flags flags= new Flags(args);
+		int lorawan_port= flags.getInteger("-p",SEMTECH_LORAWAN_PORT,"port","UDP port of the Semtech-LoRaWAN trace");
+		boolean help= flags.getBoolean("-h","prints this message");
+		String macFrame= flags.getString("-m",null, "frame","parses a LoRaWAN MAC frame");
+		String payload= flags.getString("-d",null, "frame","parses application payload");
+		boolean base64= flags.getBoolean("-b64","whether data is base64 encoded");
+		String hexFile= flags.getString("-f",null,"file","parses a file with LoRaWAN frames or payloads");
+		String pcapFile= flags.getString("-pcap",null,"file","parses a pcap file");
+		boolean semtech_to_lorawan= flags.getBoolean("-semtech","extraxts LoRaWAN payloads from Semtech-LoRaWAN packets in a pcap file");	
+		DataType payloadType= DataType.MAC_FRAME;
+		if (flags.getBoolean("-LHT65","Dragino LHT65 payload format")) payloadType= DataType.LHT65_PAYLOAD;	
+		if (flags.getBoolean("-LSE01","Dragino LSE01 payload format")) payloadType= DataType.LSE01_PAYLOAD;	
+		String app_key= flags.getString("-appkey",null,"key","the join/applidcation AppKey");
+		String app_s_key= flags.getString("-appskey",null,"key","the application session key AppSKey");
 		
-		if (help || (pcap_file==null && hex_file==null && hex_payload==null && base64_payload==null)) {
+		if (help || (macFrame==null && payload==null && hexFile==null && pcapFile==null)) {
 			out.println(flags.toUsageString(LorawanParser.class));
 			return;
 		}
 		// else
-		PayloadType payload_type=lht65_payload? PayloadType.LHT65 : lse01_payload? PayloadType.LSE01 : PayloadType.LORAWAN;
 		
 		if (app_key!=null) APP_KEY=Bytes.fromHex(app_key);
 		if (app_s_key!=null) SESSION_KEY=Bytes.fromHex(app_s_key);
 		
-		if (hex_payload!=null) {
-			out.println(parsePayload(payload_type,Bytes.fromHex(hex_payload)));
-			return;
+		if (macFrame!=null) {
+			out.println(parseLorawanMacMessage(macFrame,base64));
 		}
-		// else
-		if (base64_payload!=null) {
-			out.println(parseLorawanMacMessage(base64_payload));
-			return;
+				
+		if (payload!=null) {
+			out.println(parseApplicationPayload(payloadType,payload,base64));
 		}
-		// else
-		if (hex_file!=null) {
-			processHexPayloadFile(hex_file,payload_type,out);
+				
+		if (hexFile!=null) {
+			processHexFile(hexFile,payloadType,out);
 			return;
 		}		
-		// else
-		if (pcap_file!=null) {
-			if (semtech_to_lorawan) semtechToLoraWAN(pcap_file,lorawan_port);
-			else processPcapFile(pcap_file,lorawan_port,out);
+
+		if (pcapFile!=null) {
+			if (semtech_to_lorawan) semtechToLorawan(pcapFile,lorawan_port);
+			else processPcapFile(pcapFile,lorawan_port,out);
 			return;
 		}
 	}

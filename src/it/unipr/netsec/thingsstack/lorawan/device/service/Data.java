@@ -5,7 +5,7 @@ import org.zoolu.util.Bytes;
 /** Service that reads data from and writes data to RAM.
  * The data is passed to the constructor as byte array or as hexadecimal string;
  */
-public class Data implements Service {
+public class Data implements DataService {
 	
 	byte[] data;
 

@@ -3,14 +3,13 @@ package it.unipr.netsec.thingsstack.lorawan.device;
 
 import java.io.IOException;
 import java.net.SocketAddress;
-import java.security.GeneralSecurityException;
 
 import org.zoolu.util.Clock;
 import org.zoolu.util.LoggerLevel;
 import org.zoolu.util.SystemUtils;
 import org.zoolu.util.Timer;
 
-import it.unipr.netsec.thingsstack.lorawan.device.service.Service;
+import it.unipr.netsec.thingsstack.lorawan.device.service.DataService;
 
 
 /** LoRaWAN device that periodically sends updated data obtained by a given data service.
@@ -27,7 +26,7 @@ public class DataDevice {
 	LorawanClient client;
 	
 	/** Data service */
-	Service service;
+	DataService service;
 
 	/** Data timeout */
 	long timeout;
@@ -44,7 +43,7 @@ public class DataDevice {
 	 * @param timeout data timeout
 	 * @throws IOException
 	 */
-	public DataDevice(byte[] devEUI, String appCtxFile, byte[] joinEUI, byte[] appKey, int fPort, SocketAddress gwSoaddr, Service service, long timeout) throws IOException {
+	public DataDevice(byte[] devEUI, String appCtxFile, byte[] joinEUI, byte[] appKey, int fPort, SocketAddress gwSoaddr, DataService service, long timeout) throws IOException {
 		client=new LorawanClient(devEUI,appCtxFile,joinEUI,appKey,fPort,gwSoaddr,new LorawanClientListener(){
 			@Override
 			public void onJoinAccept(LorawanClient client) {
@@ -86,7 +85,7 @@ public class DataDevice {
 
 	
 	private void processReceivedData(LorawanClient client, byte[] data) {
-		// not implemented
+		service.setData(data);
 	}
 	
 }

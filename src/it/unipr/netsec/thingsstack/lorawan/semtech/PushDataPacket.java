@@ -2,7 +2,7 @@ package it.unipr.netsec.thingsstack.lorawan.semtech;
 
 import org.zoolu.util.Bytes;
 
-/** Semtech-LoraWAN PUSH_DATA packet.
+/** Semtech-LoRaWAN PUSH_DATA packet.
  */
 public class PushDataPacket extends SemtechGatewayPacket implements SemtechJsonObjectPacket {
 	

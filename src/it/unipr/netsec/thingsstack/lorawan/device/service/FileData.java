@@ -14,7 +14,7 @@ import org.zoolu.util.Bytes;
 /** Service that reads data from and writes data to a file.
  * The file name is passed to the constructor.
  */
-public class FileData implements Service {
+public class FileData implements DataService {
 	
 	public static final int MAXIMUM_PAYLOAD_SIZE=8096;
 	

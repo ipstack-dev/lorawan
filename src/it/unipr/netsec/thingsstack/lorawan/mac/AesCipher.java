@@ -1,4 +1,4 @@
-package it.unipr.netsec.thingsstack.lorawan;
+package it.unipr.netsec.thingsstack.lorawan.mac;
 
 
 import java.security.GeneralSecurityException;
@@ -8,7 +8,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 
-abstract class AesCipher {
+public final class AesCipher {
+	private AesCipher() {}
 
 	public static Cipher getEncryptionInstance(byte[] key) throws GeneralSecurityException {
 		Cipher cipher=Cipher.getInstance("AES/ECB/NoPadding");

@@ -2,7 +2,7 @@ package it.unipr.netsec.thingsstack.lorawan.semtech;
 
 
 
-/** Semtech-LoraWAN PUSH_ACK packet.
+/** Semtech-LoRaWAN PUSH_ACK packet.
  */public class PushAckPacket extends SemtechPacket {
 	
 	

@@ -7,7 +7,7 @@ import it.unipr.netsec.ipstack.net.Address;
 import it.unipr.netsec.ipstack.net.Packet;
 
 
-/** Semtech-LoraWAN packet.
+/** Semtech-LoRaWAN packet.
  */
 public abstract class SemtechPacket implements Packet<Address> {
 
@@ -54,7 +54,7 @@ public abstract class SemtechPacket implements Packet<Address> {
 	 * @param off the offset within the buffer */
 	protected SemtechPacket(byte[] buf, int off) {
 		this(0xff&buf[off+3],Bytes.toInt16(buf,off+1));
-		if (buf[off]!=VERSION) throw new RuntimeException("Unsupported Semtech-LoraWAN protocol version: "+(0xff&buf[off]));
+		if (buf[off]!=VERSION) throw new RuntimeException("Unsupported Semtech-LoRaWAN protocol version: "+(0xff&buf[off]));
 	}
 
 	/** Gets type.
@@ -116,18 +116,18 @@ public abstract class SemtechPacket implements Packet<Address> {
 	@Override
 	public abstract SemtechPacket clone();
 
-	/** Gets a Semtech-LoraWAN packet from an array of bytes.
+	/** Gets a Semtech-LoRaWAN packet from an array of bytes.
 	 * @param data the array of byte
-	 * @return the Semtech-LoraWAN packet */
+	 * @return the Semtech-LoRaWAN packet */
 	public static SemtechPacket parseSemtechPacket(byte[] data) {
 		return parseSemtechPacket(data,0,data.length);
 	}
 
-	/** Gets a Semtech-LoraWAN packet from an array of bytes.
+	/** Gets a Semtech-LoRaWAN packet from an array of bytes.
 	 * @param buf the buffer containing the packet
 	 * @param off the offset within the buffer
 	 * @param len the packet total length
-	 * @return the Semtech-LoraWAN packet */
+	 * @return the Semtech-LoRaWAN packet */
 	public static SemtechPacket parseSemtechPacket(byte[] buf, int off, int len) {
 		int type=0xff&buf[off+3];
 		switch (type) {
@@ -137,7 +137,7 @@ public abstract class SemtechPacket implements Packet<Address> {
 			case PULL_ACK : return new PullAckPacket(buf,off);
 			case PULL_RESP : return new PullRespPacket(buf,off,len);
 			case TX_ACK : return new TxAckPacket(buf,off,len);
-			default : throw new RuntimeException("It is not a valid Semtech-LoraWAN packet: "+Bytes.toHex(buf,off,len));
+			default : throw new RuntimeException("It is not a valid Semtech-LoRaWAN packet: "+Bytes.toHex(buf,off,len));
 		}
 	}
 	

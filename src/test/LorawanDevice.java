@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.zoolu.net.InetAddrUtils;
 import org.zoolu.util.Bytes;
 import org.zoolu.util.Flags;
 import org.zoolu.util.LoggerLevel;
@@ -17,7 +18,7 @@ import org.zoolu.util.json.JsonUtils;
 
 import it.unipr.netsec.thingsstack.lorawan.device.DataDevice;
 import it.unipr.netsec.thingsstack.lorawan.device.LorawanClient;
-import it.unipr.netsec.thingsstack.lorawan.device.service.Service;
+import it.unipr.netsec.thingsstack.lorawan.device.service.DataService;
 import it.unipr.netsec.thingsstack.lorawan.dragino.DraginoLHT65;
 
 
@@ -33,8 +34,9 @@ public class LorawanDevice {
 
 		String appEui=flags.getString("-appeui",null,"EUI","join/application EUI");
 		String appKey=flags.getString("-appkey",null,"key","application key");
+		String dataKey=flags.getString("-datakey",null,"key","data key for applying additional data encryption (experimental)");
 		
-		int devPort=flags.getInteger("-devPort",4444,"port","local port for communicating with virtual devices");
+		String gwSoaddr=flags.getString("-gw","127.0.0.1:7000","soaddr","gateway socket address");
 		
 		String devEui=flags.getString("-deveui",null,"EUI","device EUI");
 		String devType=flags.getString("-devtype","CurrentTime","type","device type (types: Counter, CurrentTime, Data, FileData, DraginoLHT65, DraginoLSE01; default type is 'CurrentTimeDevice')");
@@ -49,7 +51,7 @@ public class LorawanDevice {
 		}
 		
 		long devTime=flags.getLong("-t",DEFAULT_DATA_TIMEOUT/1000,"time","data transmission inter-time [sec] (default is 1200 = 20min)");
-		int fPort=flags.getInteger("-fport",1,"port","value of FPort field in the LoraWAN DATA messages (default is 1)");
+		int fPort=flags.getInteger("-fport",1,"port","value of FPort field in the LoRaWAN DATA messages (default is 1)");
 		//String devCtxFile=flags.getString("-devctx",null,"file","device context file containing the DevEUI and the current DevNonce value");
 
 		String configJsonFile=flags.getString("-j",null,"file","gateway configuration JSON file");
@@ -92,11 +94,12 @@ public class LorawanDevice {
 		
 		if (devType.indexOf('.')<0) {
 			if (devType.startsWith("Dragino")) devType=DraginoLHT65.class.getPackage().getName()+'.'+devType;
-			else devType=Service.class.getPackage().getName()+'.'+devType;
+			else devType=DataService.class.getPackage().getName()+'.'+devType;
 		}
 		Class<?> devClass=Class.forName(devType);
-		Service service=(Service)(devParamList.size()>0? devClass.getDeclaredConstructor(String[].class).newInstance((Object)(devParamList.toArray(new String[0]))) : devClass.newInstance());		
-		new DataDevice(Bytes.fromFormattedHex(devEui),null,Bytes.fromFormattedHex(appEui),Bytes.fromFormattedHex(appKey),fPort,new InetSocketAddress("127.0.0.1",devPort),service,devTime*1000);
+		DataService service=(DataService)(devParamList.size()>0? devClass.getDeclaredConstructor(String[].class).newInstance((Object)(devParamList.toArray(new String[0]))) : devClass.newInstance());		
+		if (dataKey!=null) service=new EncryptedService(service,Bytes.fromFormattedHex(dataKey));
+		new DataDevice(Bytes.fromFormattedHex(devEui),null,Bytes.fromFormattedHex(appEui),Bytes.fromFormattedHex(appKey),fPort,InetAddrUtils.parseInetSocketAddress(gwSoaddr),service,devTime*1000);
 	}
 
 }

@@ -95,7 +95,7 @@ public class CoapServerDevice extends AbstractCoapServer {
 		
 		int devPort=flags.getInteger("-devPort",4444,"port","local port for communicating with virtual devices");		
 		String devEui=flags.getString("-deveui",null,"EUI","device EUI");	
-		int fPort=flags.getInteger("-fport",1,"port","value of FPort field in the LoraWAN DATA messages (default is 1)");
+		int fPort=flags.getInteger("-fport",1,"port","value of FPort field in the LoRaWAN DATA messages (default is 1)");
 
 		boolean verbose=flags.getBoolean("-v","verbose mode");
 		boolean help=flags.getBoolean("-h","prints this message");

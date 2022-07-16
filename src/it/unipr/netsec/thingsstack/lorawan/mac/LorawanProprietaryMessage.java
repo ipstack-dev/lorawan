@@ -1,18 +1,16 @@
-package it.unipr.netsec.thingsstack.lorawan;
+package it.unipr.netsec.thingsstack.lorawan.mac;
 
-
-
-/** LoraWAN Proprietary message.
+/** LoRaWAN Proprietary message.
  */
 public class LorawanProprietaryMessage extends LorawanMacMessage {
 
-	/** Creates a new message.
+	/** Creates a new Proprietary message.
 	 * @param data the buffer containing the packet */
 	public LorawanProprietaryMessage(byte[] data) {
 		this(data,0,data.length);
 	}
 
-	/** Creates a new message.
+	/** Creates a new Proprietary message.
 	 * @param buf the buffer containing the packet
 	 * @param off the offset within the buffer
 	 * @param len packet length */

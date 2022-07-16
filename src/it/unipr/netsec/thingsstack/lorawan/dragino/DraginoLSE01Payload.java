@@ -1,7 +1,13 @@
 package it.unipr.netsec.thingsstack.lorawan.dragino;
 
 
+import java.util.ArrayList;
+
 import org.zoolu.util.Bytes;
+import org.zoolu.util.json.JsonMember;
+import org.zoolu.util.json.JsonNumber;
+import org.zoolu.util.json.JsonObject;
+import org.zoolu.util.json.JsonString;
 
 
 /** Dragino LSE01 payload.
@@ -138,5 +144,18 @@ public class DraginoLSE01Payload {
 		sb.append("interrupt=0x").append(Bytes.int8ToHex(getInterrupt()));
 		return sb.toString();
 	}
+	
+	/**
+	 * @return a JSON object representing the payload data */
+	public String toJson() {
+		ArrayList<JsonMember> members= new ArrayList<>();
+		members.add(new JsonMember("battery",new JsonNumber(getBatteryVoltage())));
+		members.add(new JsonMember("temperature",new JsonNumber(getSoilTemperature())));
+		members.add(new JsonMember("soil_moisture",new JsonNumber(getSoilMoisture())));
+		members.add(new JsonMember("conductivity",new JsonNumber(getSoilConductivity())));
+		members.add(new JsonMember("interrupt",new JsonString(Bytes.int8ToHex(getInterrupt()))));
+		return new JsonObject(members).toString();
+	}
+
 
 }

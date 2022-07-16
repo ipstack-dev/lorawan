@@ -8,7 +8,7 @@ import org.zoolu.util.DateFormat;
 
 /** Read-only service that provides the current time returned as YYYY-MM-dd HH:mm:ss string.
  */
-public class CurrentTime implements Service {
+public class CurrentTime implements DataService {
 
 	public CurrentTime() {
 	}

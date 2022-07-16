@@ -7,7 +7,7 @@ import org.zoolu.util.Bytes;
 /** Service that provides an integer value that is incremented at each reading.
  * The integer is encoded as four bytes in big-endian.
  */
-public class Counter implements Service {
+public class Counter implements DataService {
 	
 	long counter=0;
 
