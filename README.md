@@ -4,7 +4,7 @@ Java implementation of the LoRaWAN protocol stack together with some LoRaWAN sys
 In particular it includes implementation of:
 * LoRaWAN protocol stack (LoRaWAN MAC layer and above);
 * Semtech protocol used between a LoRaWAN gateway and network server;
-* a LoRaWAN virtual gateway;
+* LoRaWAN virtual gateway;
 * some virtual devices;
 * other LoRaWAN utilities.
 
