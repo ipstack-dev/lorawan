@@ -1,6 +1,13 @@
-# LoRaWAN virtual gateway and virtual devices
+# mjLoWAN
 
-Implementation of a LoRaWAN virtual gateway and virtual devices, plus some LoRaWAN related utilities. It includes the implementation of the LoRaWAN protocol stack with the LoRaWAN MAC layer and above, together with other LoRaWAN related protocols. 
+Java implementation of the LoRaWAN protocol stack together with some LoRaWAN systems and utilities.
+In particular it includes implementation of:
+* LoRaWAN protocol stack (LoRaWAN MAC layer and above);
+* Semtech protocol used between a LoRaWAN gateway and network server;
+* a LoRaWAN virtual gateway;
+* some virtual devices;
+* other LoRaWAN utilities.
+
 
 
 # Virtual gateway
@@ -32,6 +39,7 @@ Note that if no network server is specified, TTN 'router.eu.thethings.network' i
 The gateway communicates with virtual devices using UDP protocol. The default gateway UDP port is 1700. 
 
 
+
 # Virtual devices
 
 The provided virtual devices are software LoRaWAN devices capable to exchange LoRaWAN MAC packets with a (virtual) gateway connected to a LoRaWAN backend system.
@@ -48,6 +56,7 @@ These types of virtual devices are currently provided:
  * DraginoLSE01 - Dragino LSE01 with artificial temperature and soil moisture values.
 
 Other types of devices can be also used by simply adding their upper layer implementation (payload generation and/or consumption) and by running the generic device (*LorawanDevice*) using as type name the complete class name.
+
 
 
 # Configuring the gateway and devices on TTN
