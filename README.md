@@ -1,9 +1,9 @@
-# mjLoWAN
+# ThingsStack LoWAN
 
-Java implementation of the LoRaWAN® protocol stack together with some LoRaWAN systems and utilities.
+ThingsStack Java implementation of the LoRaWAN® protocol stack together with some LoRaWAN systems and utilities.
 In particular it includes implementation of:
 * LoRaWAN protocol stack (LoRaWAN MAC layer and above);
-* Semtech protocol used between a LoRaWAN gateway and network server;
+* Semtech protocol that can be used between a LoRaWAN gateway and network server;
 * LoRaWAN virtual gateway;
 * some virtual devices;
 * other LoRaWAN utilities.
