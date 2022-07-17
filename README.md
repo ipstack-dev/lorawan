@@ -19,7 +19,7 @@ The source code uses the following libraries from some our other projects:
 
 In the [lib](https://github.com/thingsstack/lowan/tree/main/lib) folder the corresponding jar files are provided.
 
-For simplicity, an all-in-one jar file named [thingsstack-lowan.jar](https://github.com/thingsstack/lowan/blob/main/thingsstack-lowan.jar) is also provided.
+For simplicity, the all-in-one jar file [thingsstack-lowan.jar](https://github.com/thingsstack/lowan/blob/main/thingsstack-lowan.jar) containing binary code from all libraries is also provided.
 
 
 
