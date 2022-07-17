@@ -1,6 +1,6 @@
 # mjLoWAN
 
-Java implementation of the LoRaWAN protocol stack together with some LoRaWAN systems and utilities.
+Java implementation of the LoRaWAN® protocol stack together with some LoRaWAN systems and utilities.
 In particular it includes implementation of:
 * LoRaWAN protocol stack (LoRaWAN MAC layer and above);
 * Semtech protocol used between a LoRaWAN gateway and network server;
