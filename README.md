@@ -10,6 +10,19 @@ In particular it includes implementation of:
 
 
 
+# Dependencies
+
+The source code uses the following libraries from other our projects:
+* [zooutil](https://github.com/zooutil/zooutil)
+* [ipstack](https://netsec.unipr.it/project/nemo/index.html)
+* [mjcoap](https://github.com/thingsstack/mjcoap)
+
+In the lib folder the corresponding jar files are provided.
+
+In order to simplify the execution at command-line, an all-in-one jar file named (thingsstack-lowan.jar)[https://github.com/thingsstack/lowan/blob/main/thingsstack-lowan.jar] is also provided.
+
+
+
 # Virtual gateway
 
 Software LoRaWAN gateway that can be connected to a standard remote LoRaWAN backend system (network server, join server and application server) and relays data from/to some virtual devices.
