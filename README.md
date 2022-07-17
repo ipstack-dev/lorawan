@@ -12,14 +12,14 @@ In particular it includes implementation of:
 
 # Dependencies
 
-The source code uses the following libraries from other our projects:
-* [zooutil](https://github.com/zooutil/zooutil)
-* [ipstack](https://netsec.unipr.it/project/nemo/index.html)
-* [mjcoap](https://github.com/thingsstack/mjcoap)
+The source code uses the following libraries from some our other projects:
+* [zooutil](https://github.com/zooutil/zooutil) - some utilities used for managing command line options, byte arrays, JSON strings, etc. 
+* [ipstack](https://netsec.unipr.it/project/nemo/index.html) - network libraries used for packet handling; 
+* [mjcoap](https://github.com/thingsstack/mjcoap) - CoAP implementation used in some examples of virtual devices.
 
-In the lib folder the corresponding jar files are provided.
+In the [lib](https://github.com/thingsstack/lowan/tree/main/lib) folder the corresponding jar files are provided.
 
-In order to simplify the execution at command-line, an all-in-one jar file named (thingsstack-lowan.jar)[https://github.com/thingsstack/lowan/blob/main/thingsstack-lowan.jar] is also provided.
+For simplicity, an all-in-one jar file named [thingsstack-lowan.jar](https://github.com/thingsstack/lowan/blob/main/thingsstack-lowan.jar) is also provided.
 
 
 
