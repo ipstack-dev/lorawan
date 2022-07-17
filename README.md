@@ -1,4 +1,4 @@
-# ThingsStack LoWAN
+# ThingsStack Lowan
 
 Java implementation of the LoRaWAN® protocol stack together with some LoRaWAN systems and utilities.
 In particular it includes implementation of:
