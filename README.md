@@ -1,4 +1,4 @@
-# IPSTACK Lorawan implementation
+# IPSTACK Lorawan
 
 Java implementation of the LoRaWAN® protocol stack together with some LoRaWAN systems and utilities.
 In particular it includes implementation of:
@@ -30,12 +30,12 @@ The gateway uses the Semtech protocol for the communication with the LoRaWAN net
 
 The virtual gateway can be configured via a configuration file, e.g.:
 ```
-java -cp thingsstack-lowan.jar test.LorawanGateway -f gw.cfg
+java -cp lorawan.jar test.LorawanGateway -f gw.cfg
 ```
 
 or by using command line options, e.g.:
 ```
-java -cp thingsstack-lowan.jar test.LorawanGateway -gweui FEFFFFabcdef0000 -netsrv router.eu.thethings.network
+java -cp lorawan.jar test.LorawanGateway -gweui FEFFFFabcdef0000 -netsrv router.eu.thethings.network
 ```
 
 Replaces the gateway EUI and network server address with the proper values.
@@ -152,7 +152,7 @@ Here is an example of fragment of the gateway console log that includes the asso
 
 For starting a device:
 ```
-java -cp thingsstack-lowan.jar test.LorawanDevice -f dev.cfg -v
+java -cp lorawan.jar test.LorawanDevice -f dev.cfg -v
 ```
 
 where the configuration file "dev.cfg" includes the same device values (devEui, appEui, etc.) configured in the TTN console.
