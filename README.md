@@ -212,7 +212,7 @@ At the same time, on the gateway console we have:
 That shows that a MAC packet is received from the device and it is sent to the network server using a Semtech PUSH_DATA packet. In particular the following information is reported: the Semtech packet type, the two-byte token, the gateway EUI, and the enclosed JSON object containing some metadata and the actual LoraWAN MAC message.
 The LoraWAN MAC message is included in base64 format. It can be decode as follows:
 ```
-  java -cp thingsstack-lowan.jar test.LorawanParser -B QL70CyYAAAABgrZYaGIJdkM=
+  java -cp lorawan.jar test.LorawanParser -B QL70CyYAAAABgrZYaGIJdkM=
 
         MACMessage: 40bef40b260000000182b6586862097643
         MType: Unconfirmed Data Up
@@ -229,7 +229,7 @@ The LoraWAN MAC message is included in base64 format. It can be decode as follow
 The device data is encrypted. The data can be decrypted using the 'appSKey' of the session context created above.
 In this example the appSKey is '2ab6ddbb0ae7032de57ceb3d9faa5aa1', and the data can decrypted by doing:
 ```
-  java -cp thingsstack-lowan.jar test.LorawanParser -B QL70CyYAAAABgrZYaGIJdkM= -appskey 2ab6ddbb0ae7032de57ceb3d9faa5aa1
+  java -cp lorawan.jar test.LorawanParser -B QL70CyYAAAABgrZYaGIJdkM= -appskey 2ab6ddbb0ae7032de57ceb3d9faa5aa1
 
         MACMessage: 40bef40b260000000182b6586862097643
         MType: Unconfirmed Data Up
