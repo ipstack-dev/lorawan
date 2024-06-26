@@ -17,9 +17,9 @@ The source code uses the following libraries from some our other projects:
 * [ipstack](https://netsec.unipr.it/project/nemo/index.html) - network libraries used for packet handling; 
 * [mjcoap](https://github.com/thingsstack/mjcoap) - CoAP implementation used in some examples of virtual devices.
 
-In the [lib](https://github.com/thingsstack/lowan/tree/main/lib) folder the corresponding jar files are provided.
+In the [lib](https://github.com/ipstack-dev/lorawan/tree/main/lib) folder the corresponding jar files are provided.
 
-For simplicity, the all-in-one jar file [thingsstack-lowan.jar](https://github.com/thingsstack/lowan/blob/main/thingsstack-lowan.jar) containing binary code from all libraries is also provided.
+For simplicity, the all-in-one jar file [lorawan.jar](https://github.com/ipstack-dev/lorawan/blob/main/lorawan.jar) containing binary code from all libraries is also provided.
 
 
 
@@ -115,7 +115,7 @@ Now we are ready to start the virtual gateway and devices.
 
 For starting the gateway:
 ```
-java -cp thingsstack-lowan.jar test.LorawanGateway -f gw.cfg -v
+java -cp lorawan.jar test.LorawanGateway -f gw.cfg -v
 ```
 
 where the configuration file "gw.cfg" includes the same gateway values (gwEui and networkServer) configured in the TTN console.
