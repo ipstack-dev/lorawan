@@ -32,8 +32,8 @@ For simplicity, the all-in-one jar file [lorawan-all.jar](https://github.com/ips
 
 More information regarding LoRaWAN server, gateway, and device reference implementation can be found here:
 
-- [server](https://github.com/ipstack-dev/lorawan/blob/main/doc/server.md)
-- [gateway](https://github.com/ipstack-dev/lorawan/blob/main/doc/gateway.md)
-- [device](https://github.com/ipstack-dev/lorawan/blob/main/doc/device.md)
+- [server](https://github.com/ipstack-dev/lorawan-server/blob/main/doc/server.md)
+- [gateway](https://github.com/ipstack-dev/lorawan/blob/main/gateway.md)
+- [device](https://github.com/ipstack-dev/lorawan/blob/main/device.md)
 
 
