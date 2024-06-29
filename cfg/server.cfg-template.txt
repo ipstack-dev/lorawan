@@ -1,0 +1,40 @@
+{
+	"homeNetId":  "000001",
+
+	"deviceFile": "cfg/server-devices.json",
+
+	"stateFile": "cfg/server-state.json",
+	
+	"allowedGateways": [],
+	
+	"managementPort": 4998,
+	
+#	"httpConnector": {
+#		"port": 4999,
+#		"endpoints": [
+#			{ "soaddr": "127.0.0.1:8000", "authToken": "PASS1" },
+#			{ "authToken": "PASS2" }
+#		]
+#	},
+	
+#	"coapConnector": {
+#		"port": 4999,
+#		"endpoints": [
+#			{ "soaddr": "127.0.0.1:8000", "authToken": "PASS1" },
+#			{ "authToken": "PASS2" }
+#		]
+#	},
+
+#	"mqttConnector": {
+#		"broker": "127.0.0.1:1883",	
+#		"user": "testuser",
+#		"passwd": "passwd"
+#	},
+
+	"log": {
+		"fileName": "log/server.log",
+		"rotations": 7,
+		"maxSize": 634880
+	}
+	
+}

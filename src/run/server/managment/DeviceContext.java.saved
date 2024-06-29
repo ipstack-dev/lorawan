@@ -1,0 +1,27 @@
+package run.server.managment;
+
+import io.ipstack.lorawan.mac.AppContext;
+
+
+public class DeviceContext extends AppContext {
+	
+	private String type;
+
+	
+	protected DeviceContext() {
+	}
+
+	public DeviceContext(AppContext appCtx) {
+		this(appCtx,null);
+	}
+
+	public DeviceContext(AppContext appCtx, String type) {
+		super(appCtx.devEUI(),appCtx.joinEUI(),appCtx.appKey(),appCtx.nwkKey(),appCtx.devNonce());
+		this.type= type;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+}

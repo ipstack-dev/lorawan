@@ -1,0 +1,33 @@
+package run.server.connector;
+
+import io.ipstack.lorawan.server.json.RxMetadata;
+
+
+public class RxDataInfo {
+	
+	public String time;
+
+	//public String appEUI;
+
+	public String devEUI;
+	
+	public int fport;
+	
+	public byte[] payload;
+	
+	public RxMetadata[] rxMetadata;
+
+
+	protected RxDataInfo() {
+	}
+
+	public RxDataInfo(String time, /*String appEUI, */String devEUI, int fport, byte[] payload, RxMetadata[] rxMetadata) {
+		this.time= time;
+		//this.appEUI= appEUI;
+		this.devEUI= devEUI;
+		this.fport= fport;
+		this.payload= payload;
+		this.rxMetadata= rxMetadata;
+	}
+	
+}

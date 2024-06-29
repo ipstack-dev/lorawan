@@ -1,0 +1,16 @@
+# Gateway configuration file.
+
+
+# Gateway EUI. 8 byte EUI in hexadecimal format.
+# For example it could be generated from a MAC address XXXXXXYYYYYY (48 bit), obtaining the EUI: XXXXXXfffeYYYYYY (64 bit).
+
+eui= 
+
+# Gateway position as geographical latitude and longitude coordinates.
+
+latitude= -1
+longitude= -1
+
+# Host address the LorWAN Network Server.
+
+networkServer= eu1.cloud.thethings.network
