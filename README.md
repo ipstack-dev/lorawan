@@ -1,4 +1,4 @@
-# ipstack Lorawan
+# Lorawan
 
 Java implementation of the LoRaWAN® protocol stack together with the reference implementation of the main LoRaWAN network elements and some utilities.
 In particular it includes the implementation of:
