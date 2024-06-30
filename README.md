@@ -98,11 +98,7 @@ java -cp "lib/*" run.server.Server -f cfg/server.cfg -v
 ```
 
 ```
-java -cp "lib/*" run.gateway.VirtualGateway -g feffff0000ffffff -s 127.0.0.1 -p 7001 -v
-```
-
-```
-java -cp "lib/*" run.gateway.VirtualGateway -g feffff0000ffffff -s 127.0.0.1 -p 7001 -v
+java -cp "lib/*" run.gateway.VirtualGateway -g ffffff0000ffffff -s 127.0.0.1 -p 7001 -v
 ```
 
 ```
