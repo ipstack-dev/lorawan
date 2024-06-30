@@ -106,7 +106,36 @@ java -cp "lib/*" run.device.VirtualDevice -d ffffff0000000001 -j 000000000000000
 ```
 
 
-# Using the virtual gateway and devices with TTN
+# Test a remote LoRaWAN platform using ipstack Lorawan
+
+If you want to test a remote LoRaWAN platform you can either:
+
+1. run one or more virtual devices and a virtual gateway and connect the gatewat to the remote network server as describe above;
+
+2. use the proper ipstack Lorawan `LorawanRemoteNetworkTest` tool.
+
+
+Hereafter simple instructions for the latter solution. 
+
+The `LorawanRemoteNetworkTest` application can be used to run a virtual gateway, connect it to the lorawan server and run a virtual device.
+
+For example let's suppose that you already locally run a lorawan server (e.g. a [ipstack Lorawan Server](https://github.com/ipstack-dev/lorawan-server)). Then you can test the server platform by simply execute:
+
+```
+java -cp lib/* test.LorawanRemoteNetworkTest -g ffffff0000ffffff -d ffffff0000000001 -j 0000000000000001 -k aaaaaaaabbbbbbbbccccccccdddddddd -p 1 -s 127.0.0.1
+```
+
+where:
+- '-g ffffff0000ffffff' specifies the EUI assigned to the gateway (usually you have to register this EUI also in the server platform);
+- '-d ffffff0000000001' specifies the EUI of the devices (DevEUI);
+- '-j 0000000000000001' specifies the AppEUI;
+- '-k aaaaaaaabbbbbbbbccccccccdddddddd' specifies the AppKey
+- '-p 1' the used fPort value;
+- '-s 127.0.0.1' the address (and port) of the server; if no port is specified the default port 1700 is used (it is the same as '-s 127.0.0.1:1700'). 
+
+
+
+# Using virtual gateway and devices with TTN
 
 Hereafter there are some guideline for connecting a virtual gateway and virtual devices to TTN (The Things Network).
 
