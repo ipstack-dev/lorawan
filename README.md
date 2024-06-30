@@ -32,13 +32,13 @@ In the following subsections different components included in the library are de
 
 
 
-## Lorawan Server
+# Lorawan Server
 
 Reference implementation of a LoRaWAN server platform (Network Server, Join Server and App Server). More details, libraries, and instructions for running the ipstack Lorawan Server can be found [here](https://github.com/ipstack-dev/lorawan-server).
 
 
 
-## Virtual Gateway
+# Virtual Gateway
 
 Software LoRaWAN gateway that can be connected to a standard remote LoRaWAN backend system (network server, join server and application server) and relays data from/to some virtual devices.
 The gateway uses the Semtech protocol for the communication with the LoRaWAN network server.
@@ -74,7 +74,7 @@ java -cp "lib/*" run.gateway.VirtualGateway -g feffff0000ffffff -s 127.0.0.1 -v
 ```
 
 
-## Virtual devices
+# Virtual devices
 
 Virtual devices are software LoRaWAN devices included in the ipstack Lorawan library and capable to exchange LoRaWAN MAC packets with a virtual gateway connected to a LoRaWAN backend system.
 
@@ -110,7 +110,7 @@ java -cp "lib/*" run.device.VirtualDevice -d ffffff0000000001 -j 000000000000000
 ```
 
 
-## Using the virtual gateway and devices with TTN
+# Using the virtual gateway and devices with TTN
 
 Hereafter there are some guideline for connecting a virtual gateway and virtual devices to TTN (The Things Network).
 
