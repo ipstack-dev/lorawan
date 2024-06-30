@@ -1,6 +1,6 @@
 # ipstack Lorawan
 
-Java implementation of the LoRaWAN® protocol stack together with the some reference implementations of the main LoRaWAN network elements, and utilities.
+Java implementation of the LoRaWAN® protocol stack together with some reference implementations of the main LoRaWAN network elements, and utilities.
 In particular it includes the implementation of:
 * complete LoRaWAN protocol stack (LoRaWAN MAC layer and above), as defined by the standard LoRaWAN® specifications;
 * Semtech protocol, that can be used between a LoRaWAN gateway and the network server;
